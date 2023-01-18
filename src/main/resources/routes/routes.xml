@@ -1,21 +1,36 @@
-<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://camel.apache.org/schema/spring"
-        xsi:schemaLocation="
-       http://camel.apache.org/schema/spring
-       http://camel.apache.org/schema/spring/camel-spring.xsd">
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://camel.apache.org/schema/spring"
+        xsi:schemaLocation="http://camel.apache.org/schema/spring https://camel.apache.org/schema/spring/camel-spring.xsd">
 
     <route id="InsertCardInfo">
         <from uri="activemq-demo:queue:anhnh.test.message.request?asyncConsumer=true" />
         <log message="Request Body in InsertCardInfo: ${body}" />
-
-        <process ref="insertDBProcess" />
-        <log message="Request Body of insertDBProcess: ${body}" />
-
+        <process ref="insertResponseProcess" />
+        <log message="Request Body of insertResponseProcess: ${body}" />
         <to uri="spring-jdbc:dataSource"/>
-<!--
-        <log message="Request Body after insertDBProcess: ${body}" />
--->
-
         <to uri="activemq-demo:queue:anhnh.test.message.response" />
+    </route>
+
+    <route id="SelectAllCardInfo">
+        <from uri="direct:selectAll" />
+        <process ref="selectAllRequestProcess" />
+        <log message="Request Body of selectAllRequestProcess: ${body}" />
+        <to uri="spring-jdbc:dataSource"/>
+        <log message="Response Body of selectAllRequestProcess: ${body}" />
+<!--        <process ref="selectAllResponseProcess" />-->
+        <log message="Response Body of selectAllResponseProcess: ${body}" />
+<!--        <to uri="activemq-demo:queue:anhnh.test.selectall.response" />-->
+    </route>
+
+    <route id="SelectByIdCardInfo">
+        <from uri="direct:select" />
+        <process ref="selectByIdRequestProcess" />
+        <log message="Request Body of SelectByIdCardInfo: ${body}" />
+        <to uri="spring-jdbc:dataSource"/>
+        <log message="Response Body of selectByIdRequestProcess: ${body}" />
+<!--        <process ref="selectAllResponseProcess" />-->
+<!--        <log message="Response Body of selectByIdRequestProcess: ${body}" />-->
+        <!--        <to uri="activemq-demo:queue:anhnh.test.selectall.response" />-->
     </route>
 
 </routes>

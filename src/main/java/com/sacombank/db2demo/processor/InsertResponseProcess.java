@@ -1,9 +1,7 @@
 package com.sacombank.db2demo.processor;
 
 import com.google.gson.Gson;
-import com.sacombank.db2demo.constant.Constant;
 import com.sacombank.db2demo.model.request.CardInfoRequest;
-import com.sacombank.db2demo.utils.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
@@ -16,7 +14,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class InsertDBProcess implements Processor {
+public class InsertResponseProcess implements Processor {
 
     private final Gson gson;
 

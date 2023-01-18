@@ -6,8 +6,11 @@ import com.sacombank.db2demo.model.request.CardInfoRequest;
 import com.sacombank.db2demo.service.CardInfoService;
 import com.sacombank.db2demo.service.MessageService;
 import lombok.RequiredArgsConstructor;
+import org.apache.camel.ProducerTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/app/v1/card-info/")
@@ -17,6 +20,8 @@ public class CardController {
     private final CardInfoService cardInfoService;
     private final MessageService messageService;
     private final Gson gson;
+    private final ProducerTemplate producerTemplate;
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
@@ -34,11 +39,22 @@ public class CardController {
     }
 
     @PostMapping("/message")
-    public ResponseEntity<?> message(@RequestBody CardInfoRequest request) throws InterruptedException {
+    public ResponseEntity<?> message(@RequestBody CardInfoRequest request) {
         messageService.sendMessageToQueue(Constant.QUEUE_NAME_REQUEST, request);
 
-        // Thread.sleep(3000);
-
         return ResponseEntity.ok(true);
+    }
+
+    @GetMapping("/message/get-all")
+    public ResponseEntity<?> getAllCardInfo() {
+        var response = producerTemplate.requestBody("direct:selectAll", null, List.class);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/message/get/{id}")
+    public ResponseEntity<?> getCardInfo(@PathVariable Long id) {
+        var response = producerTemplate.requestBody("direct:select", gson.toJson(id), List.class);
+
+        return ResponseEntity.ok(response);
     }
 }
