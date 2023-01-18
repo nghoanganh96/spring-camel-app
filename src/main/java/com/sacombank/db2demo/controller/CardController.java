@@ -1,0 +1,44 @@
+package com.sacombank.db2demo.controller;
+
+import com.google.gson.Gson;
+import com.sacombank.db2demo.constant.Constant;
+import com.sacombank.db2demo.model.request.CardInfoRequest;
+import com.sacombank.db2demo.service.CardInfoService;
+import com.sacombank.db2demo.service.MessageService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/app/v1/card-info/")
+@RequiredArgsConstructor
+public class CardController {
+
+    private final CardInfoService cardInfoService;
+    private final MessageService messageService;
+    private final Gson gson;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(cardInfoService.getById(id));
+    }
+
+    @PostMapping("/save")
+    public ResponseEntity<?> save(@RequestBody CardInfoRequest request) {
+        return ResponseEntity.ok(cardInfoService.save(request));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        return ResponseEntity.ok(cardInfoService.delete(id));
+    }
+
+    @PostMapping("/message")
+    public ResponseEntity<?> message(@RequestBody CardInfoRequest request) throws InterruptedException {
+        messageService.sendMessageToQueue(Constant.QUEUE_NAME_REQUEST, request);
+
+        // Thread.sleep(3000);
+
+        return ResponseEntity.ok(true);
+    }
+}

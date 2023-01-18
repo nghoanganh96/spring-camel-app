@@ -1,0 +1,30 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:db2://localhost:50000/testdb
+    username: db2inst1
+    password: password
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+
+# to keep the JVM running
+camel:
+  springboot:
+    main-run-controller: true
+    routes-include-pattern: routes/routes.xml
+  threadpool:
+    pool-size: 10
+    max-queue-size: 1000
+  component:
+    properties:
+      location: routes/camel.properties
+
+activemq-jds:
+  name: activemq-demo
+  host: tcp://localhost:61616
+  session-cache-size: 500
+

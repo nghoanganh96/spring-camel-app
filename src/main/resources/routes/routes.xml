@@ -1,0 +1,21 @@
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://camel.apache.org/schema/spring"
+        xsi:schemaLocation="
+       http://camel.apache.org/schema/spring
+       http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <route id="InsertCardInfo">
+        <from uri="activemq-demo:queue:anhnh.test.message.request?asyncConsumer=true" />
+        <log message="Request Body in InsertCardInfo: ${body}" />
+
+        <process ref="insertDBProcess" />
+        <log message="Request Body of insertDBProcess: ${body}" />
+
+        <to uri="spring-jdbc:dataSource"/>
+<!--
+        <log message="Request Body after insertDBProcess: ${body}" />
+-->
+
+        <to uri="activemq-demo:queue:anhnh.test.message.response" />
+    </route>
+
+</routes>
