@@ -1,13 +1,16 @@
 package com.sacombank.db2demo.processor;
 
 import com.google.gson.Gson;
+import com.sacombank.db2demo.constant.Constant;
 import com.sacombank.db2demo.model.request.CardInfoRequest;
+import com.sacombank.db2demo.utils.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -24,13 +27,15 @@ public class InsertDBProcess implements Processor {
 
             CardInfoRequest cardInfoRequest = gson.fromJson(body, CardInfoRequest.class);
 
-            String query = String.format("INSERT INTO CARD_INFORMATION(CIF_ID, CUST_NAME, CARD_NUMBER, CARD_TYPE, UUID) " +
-                            "VALUES('%s', '%s', '%s', '%s', '%s')"
+            String query = String.format("INSERT INTO CARD_INFORMATION(CIF_ID, CUST_NAME, CARD_NUMBER, CARD_TYPE, UUID, CREATED_DATE, MODIFIED_DATE) " +
+                            "VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s')"
                     , cardInfoRequest.getCifId()
                     , cardInfoRequest.getCustName()
                     , cardInfoRequest.getCardNumber()
                     , cardInfoRequest.getCardType()
                     , UUID.randomUUID()
+                    , LocalDateTime.now()
+                    , LocalDateTime.now()
             );
             exchange.getIn().setBody(query);
         } catch (Exception ex) {
