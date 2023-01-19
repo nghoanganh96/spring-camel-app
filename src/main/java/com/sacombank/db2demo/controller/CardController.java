@@ -45,6 +45,13 @@ public class CardController {
         return ResponseEntity.ok(true);
     }
 
+    @PostMapping("/message/insert-sql")
+    public ResponseEntity<?> messageInsertSql(@RequestBody CardInfoRequest request) {
+        messageService.sendMessageToQueue(Constant.QUEUE_NAME_INSERT_SQL_REQUEST, request);
+
+        return ResponseEntity.ok(true);
+    }
+
     @GetMapping("/message/get-all")
     public ResponseEntity<?> getAllCardInfo() {
         var response = producerTemplate.requestBody("direct:selectAll", null, List.class);

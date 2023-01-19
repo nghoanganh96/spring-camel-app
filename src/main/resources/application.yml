@@ -24,6 +24,7 @@ camel:
     properties:
       location: routes/camel.properties
 
+
 activemq-jds:
   name: activemq-demo
   host: tcp://localhost:61616
