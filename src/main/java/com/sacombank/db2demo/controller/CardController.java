@@ -22,21 +22,21 @@ public class CardController {
     private final Gson gson;
     private final ProducerTemplate producerTemplate;
 
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<?> getById(@PathVariable Long id) {
-//        return ResponseEntity.ok(cardInfoService.getById(id));
-//    }
-//
-//    @PostMapping("/save")
-//    public ResponseEntity<?> save(@RequestBody CardInfoRequest request) {
-//        return ResponseEntity.ok(cardInfoService.save(request));
-//    }
-//
-//    @DeleteMapping("/delete/{id}")
-//    public ResponseEntity<?> delete(@PathVariable Long id) {
-//        return ResponseEntity.ok(cardInfoService.delete(id));
-//    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(cardInfoService.getById(id));
+    }
+
+    @PostMapping("/save")
+    public ResponseEntity<?> save(@RequestBody CardInfoRequest request) {
+        return ResponseEntity.ok(cardInfoService.save(request));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        return ResponseEntity.ok(cardInfoService.delete(id));
+    }
 
     @PostMapping("/message")
     public ResponseEntity<?> message(@RequestBody CardInfoRequest request) {
