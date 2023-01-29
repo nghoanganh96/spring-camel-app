@@ -5,6 +5,7 @@
     <!--    Spring-Jdbc component-->
     <route id="InsertCardInfo">
         <from uri="activemq-demo:queue:anhnh.test.message.request?asyncConsumer=true" />
+        <transacted ref="TX_REQUIRED"/>
         <log message="Request Body in InsertCardInfo: ${body}" />
         <process ref="insertRequestProcess" />
         <setHeader name="CamelRetrieveGeneratedKeys">
@@ -19,6 +20,7 @@
     <!--    Sql component-->
     <route id="InsertCardInfo-Sql">
         <from uri="activemq-demo:queue:anhnh.test.insert-sql.request?asyncConsumer=true" />
+        <transacted ref="TX_REQUIRED"/>
         <log message="Request Body in InsertCardInfo-Sql: ${body}" />
         <process ref="insertSqlRequestProcess" />
         <log message="Request Body of insertSqlRequestProcess: ${body}" />

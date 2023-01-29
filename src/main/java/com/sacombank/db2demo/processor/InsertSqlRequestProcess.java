@@ -41,9 +41,10 @@ public class InsertSqlRequestProcess implements Processor {
             map.put(DBConstant.CardInformation.Column.CARD_TYPE, cardInfoRequest.getCardType());
             map.put(DBConstant.CardInformation.Column.UUID, UUID.randomUUID().toString());
             map.put(DBConstant.CardInformation.Column.CREATED_DATE, nowDateTimeStr);
-            map.put(DBConstant.CardInformation.Column.MODIFIED_DATE, nowDateTimeStr);
+            //map.put(DBConstant.CardInformation.Column.MODIFIED_DATE, nowDateTimeStr);
 
             exchange.getIn().setHeader(SqlConstants.SQL_RETRIEVE_GENERATED_KEYS, true);
+            exchange.getIn().setHeader(DBConstant.CardInformation.Column.MODIFIED_DATE, nowDateTimeStr);
             exchange.getIn().setBody(map);
 
         } catch (Exception ex) {

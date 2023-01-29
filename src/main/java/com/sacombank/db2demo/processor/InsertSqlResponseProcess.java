@@ -24,10 +24,15 @@ public class InsertSqlResponseProcess implements Processor {
     @Override
     public void process(Exchange exchange) {
         try {
+            // if (true) throw new Exception("Response exception !!!!");
+
             List<Map<String, Object>> generatedKeys = exchange.getIn().getHeader(SqlConstants.SQL_GENERATED_KEYS_DATA, List.class);
             log.info("InsertSqlResponseProcess -> SQL_GENERATED_KEYS_DATA = {}", generatedKeys);
+
             Long idGenerated = (Long)generatedKeys.get(0).get(DBConstant.CardInformation.Column.ID);
-            exchange.getIn().setBody(CardInformation.builder().id(idGenerated).build());
+
+            exchange.getIn().setBody(new Object[] {idGenerated});
+
         } catch (Exception ex) {
             log.error("InsertSqlResponseProcess failed: ", ex);
         }

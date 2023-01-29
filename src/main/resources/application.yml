@@ -4,13 +4,16 @@ server:
 spring:
   datasource:
     url: jdbc:db2://localhost:50000/testdb
-    username: db2inst1
+    username: db2card
     password: password
   jpa:
     generate-ddl: true
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: validate
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
 
 # to keep the JVM running
 camel:

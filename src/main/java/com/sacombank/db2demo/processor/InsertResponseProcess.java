@@ -23,6 +23,8 @@ public class InsertResponseProcess implements Processor {
     @Override
     public void process(Exchange exchange) {
         try {
+            // if (true) throw new Exception("Response exception !!!!");
+
             List<Map<String, Object>> generatedKeys = exchange.getIn().getHeader(JdbcConstants.JDBC_GENERATED_KEYS_DATA, List.class);
             log.info("InsertResponseProcess -> JDBC_GENERATED_KEYS_DATA = {}", generatedKeys);
             Long idGenerated = (Long)generatedKeys.get(0).get(DBConstant.CardInformation.Column.ID);
