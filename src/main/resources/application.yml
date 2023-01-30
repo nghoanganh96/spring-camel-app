@@ -4,12 +4,13 @@ server:
 spring:
   datasource:
     url: jdbc:db2://localhost:50000/testdb
-    username: db2card
+#    username: db2card
+    username: db2inst1
     password: password
   jpa:
     generate-ddl: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     properties:
       hibernate:
         show_sql: true

@@ -10,6 +10,7 @@ import org.apache.camel.Processor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,8 +36,8 @@ public class SelectAllResponseProcess implements Processor {
                 cardInfoResponse.setCardNumber((String)data.get(DBConstant.CardInformation.Column.CARD_NUMBER));
                 cardInfoResponse.setCardType((String)data.get(DBConstant.CardInformation.Column.CARD_TYPE));
                 cardInfoResponse.setUuid((String)data.get(DBConstant.CardInformation.Column.UUID));
-                cardInfoResponse.setCreatedDate((Timestamp)data.get(DBConstant.CardInformation.Column.CREATED_DATE));
-                cardInfoResponse.setModifiedDate((Timestamp)data.get(DBConstant.CardInformation.Column.MODIFIED_DATE));
+                cardInfoResponse.setCreatedDate((LocalDateTime) data.get(DBConstant.CardInformation.Column.CREATED_DATE));
+                cardInfoResponse.setModifiedDate((LocalDateTime)data.get(DBConstant.CardInformation.Column.MODIFIED_DATE));
 
                 cardInformationList.add(cardInfoResponse);
             });

@@ -64,4 +64,11 @@ public class CardController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/message/jpa/save")
+    public ResponseEntity<?> messageInsertJpa(@RequestBody CardInfoRequest request) {
+        messageService.sendMessageToQueue("anhnh.save-jpa.request", request);
+
+        return ResponseEntity.ok(true);
+    }
 }
