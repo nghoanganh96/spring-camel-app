@@ -2,6 +2,7 @@ package com.sacombank.db2demo.controller;
 
 import com.google.gson.Gson;
 import com.sacombank.db2demo.constant.Constant;
+import com.sacombank.db2demo.entity.CardInformation;
 import com.sacombank.db2demo.model.request.CardInfoRequest;
 import com.sacombank.db2demo.service.CardInfoService;
 import com.sacombank.db2demo.service.MessageService;
@@ -60,7 +61,14 @@ public class CardController {
 
     @GetMapping("/message/get/{id}")
     public ResponseEntity<?> getCardInfo(@PathVariable Long id) {
-        var response = producerTemplate.requestBody("direct:select", gson.toJson(id), List.class);
+        var response = producerTemplate.requestBody("direct:selectById", gson.toJson(id), CardInformation.class);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/message/update")
+    public ResponseEntity<?> update(@RequestBody CardInfoRequest request) {
+        var response = producerTemplate.requestBody("direct:updateCardInfo", gson.toJson(request), String.class);
 
         return ResponseEntity.ok(response);
     }

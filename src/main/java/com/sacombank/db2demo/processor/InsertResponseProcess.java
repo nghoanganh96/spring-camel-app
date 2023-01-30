@@ -28,7 +28,7 @@ public class InsertResponseProcess implements Processor {
             List<Map<String, Object>> generatedKeys = exchange.getIn().getHeader(JdbcConstants.JDBC_GENERATED_KEYS_DATA, List.class);
             log.info("InsertResponseProcess -> JDBC_GENERATED_KEYS_DATA = {}", generatedKeys);
             Long idGenerated = (Long)generatedKeys.get(0).get(DBConstant.CardInformation.Column.ID);
-            exchange.getIn().setBody(CardInformation.builder().id(idGenerated).build());
+            exchange.getIn().setBody(idGenerated);
         } catch (Exception ex) {
             log.error("InsertDBProcess failed: ", ex);
         }

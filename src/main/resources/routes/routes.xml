@@ -17,8 +17,8 @@
         <to uri="activemq-demo:queue:anhnh.test.message.response" />
     </route>
 
-    <!--    Sql component-->
-    <route id="InsertCardInfo-Sql">
+    <!--    Sql component: Insert -->
+    <route id="InsertCardInfoSql">
         <from uri="activemq-demo:queue:anhnh.test.insert-sql.request?asyncConsumer=true" />
         <transacted ref="TX_REQUIRED"/>
         <log message="Request Body in InsertCardInfo-Sql: ${body}" />
@@ -29,26 +29,70 @@
         <to uri="activemq-demo:queue:anhnh.test.insert-sql.response" />
     </route>
 
+    <!--    Sql component: Update -->
+    <route id="UpdateCardInfoSql">
+        <from uri="direct:UpdateCardInfoSql" />
+        <transacted ref="TX_REQUIRED"/>
+        <process ref="sqlPreUpdateRequestProcess" />
+        <log message="Request Body of preUpdateRequestProcess: ${body}" />
+        <to uri="direct:FindOneCardInfoSql"/>
+        <process ref="sqlUpdateRequestProcess" />
+        <to uri="sql:INSERT INTO CARD_INFORMATION(CIF_ID, CUST_NAME, CARD_NUMBER, CARD_TYPE, UUID, CREATED_DATE, MODIFIED_DATE) VALUES(:#CIF_ID, :#CUST_NAME, :#CARD_NUMBER, :#CARD_TYPE, :#UUID, :#CREATED_DATE, :#MODIFIED_DATE)"/>
+        <process ref="insertSqlResponseProcess" />
+    </route>
+
+    <!--    Sql component: Find One By Id -->
+    <route id="FindOneCardInfoSql">
+        <from uri="direct:FindOneCardInfoSql" />
+        <process ref="sqlFindByIdRequestProcess" />
+        <log message="Request Body of insertSqlRequestProcess: ${body}" />
+        <to uri="sql:SELECT * FROM CARD_INFORMATION WHERE ID = :#VALUE"/>
+        <process ref="sqlHandleListResponseProcess" />
+        <process ref="sqlFindByIdResponseProcess" />
+    </route>
+
+    <!--    Spring-jdbc -->
     <route id="SelectAllCardInfo">
         <from uri="direct:selectAll" />
         <process ref="selectAllRequestProcess" />
         <log message="Request Body of selectAllRequestProcess: ${body}" />
         <to uri="spring-jdbc:dataSource"/>
         <log message="Response Body of selectAllRequestProcess: ${body}" />
-<!--        <process ref="selectAllResponseProcess" />-->
-        <log message="Response Body of selectAllResponseProcess: ${body}" />
-<!--        <to uri="activemq-demo:queue:anhnh.test.selectall.response" />-->
+        <process ref="handleListResponseProcess" />
+        <log message="Response Body of handleListResponseProcess: ${body}" />
     </route>
 
+    <!--    Spring-jdbc -->
     <route id="SelectByIdCardInfo">
-        <from uri="direct:select" />
-        <process ref="selectByIdRequestProcess" />
+        <from uri="direct:selectById" />
+        <process ref="findByIdRequestProcess" />
         <log message="Request Body of SelectByIdCardInfo: ${body}" />
         <to uri="spring-jdbc:dataSource"/>
         <log message="Response Body of selectByIdRequestProcess: ${body}" />
-<!--        <process ref="selectAllResponseProcess" />-->
-<!--        <log message="Response Body of selectByIdRequestProcess: ${body}" />-->
-        <!--        <to uri="activemq-demo:queue:anhnh.test.selectall.response" />-->
+        <process ref="handleListResponseProcess" />
+        <process ref="findByIdResponseProcess" />
+    </route>
+
+    <!--    Spring-jdbc component: Update -->
+    <route id="UpdateCardInfo">
+        <from uri="direct:updateCardInfo" />
+        <process ref="preUpdateRequestProcess" />
+        <log message="Request Body of preUpdateRequestProcess: ${body}" />
+        <to uri="direct:selectById"/>
+        <process ref="updateRequestProcess" />
+        <to uri="spring-jdbc:dataSource"/>
+        <process ref="updateResponseProcess" />
+    </route>
+
+    <!--    Spring-jdbc component: Delete -->
+    <route id="UpdateCardInfo">
+        <from uri="direct:updateCardInfo" />
+        <process ref="preUpdateRequestProcess" />
+        <log message="Request Body of preUpdateRequestProcess: ${body}" />
+        <to uri="direct:selectById"/>
+        <process ref="updateRequestProcess" />
+        <to uri="spring-jdbc:dataSource"/>
+        <process ref="updateResponseProcess" />
     </route>
 
 </routes>

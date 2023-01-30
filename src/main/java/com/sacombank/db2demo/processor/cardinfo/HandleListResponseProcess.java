@@ -1,4 +1,4 @@
-package com.sacombank.db2demo.processor;
+package com.sacombank.db2demo.processor.cardinfo;
 
 import com.google.gson.Gson;
 import com.sacombank.db2demo.constant.DBConstant;
@@ -13,18 +13,19 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Service
+@Service("sqlHandleListResponseProcess")
 @Slf4j
 @RequiredArgsConstructor
-public class SelectAllResponseProcess implements Processor {
+public class HandleListResponseProcess implements Processor {
 
     private final Gson gson;
 
     @Override
     public void process(Exchange exchange) {
         try {
-            ArrayList<HashMap<String, Object>> response = (ArrayList<HashMap<String, Object>>)exchange.getIn().getBody();
+            ArrayList<Map<String, Object>> response = (ArrayList<Map<String, Object>>)exchange.getIn().getBody();
             List<CardInformation> cardInformationList = new ArrayList<>();
 
             response.forEach(data -> {

@@ -9,6 +9,7 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CardInfoRequest {
 
+    private Long id;
     private String cifId;
 
     private String cardNumber;
