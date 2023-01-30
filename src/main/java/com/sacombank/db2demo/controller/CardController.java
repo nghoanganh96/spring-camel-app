@@ -9,6 +9,7 @@ import com.sacombank.db2demo.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -70,6 +71,13 @@ public class CardController {
     public ResponseEntity<?> update(@RequestBody CardInfoRequest request) {
         var response = producerTemplate.requestBody("direct:updateCardInfo", gson.toJson(request), String.class);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(null != response);
+    }
+
+    @DeleteMapping("/message/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        var response = producerTemplate.requestBody("direct:deleteCardInfo", gson.toJson(id), String.class);
+
+        return ResponseEntity.ok(null != response);
     }
 }

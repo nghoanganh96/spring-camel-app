@@ -4,8 +4,12 @@ server:
 spring:
   datasource:
     url: jdbc:db2://localhost:50000/testdb
-    username: db2card
+    username: db2inst1
     password: password
+    hikari:
+      keepalive-time: 10000
+      auto-commit: false
+      maximum-pool-size: 15
   jpa:
     generate-ddl: true
     hibernate:

@@ -19,13 +19,14 @@ public class UpdateResponseProcess implements Processor {
 
 
     @Override
-    public void process(Exchange exchange) {
+    public void process(Exchange exchange) throws Exception {
         try {
-            String body = exchange.getIn().getBody(String.class);
-            exchange.getIn().setBody(body);
+            CardInfoRequest request = exchange.getProperty("REQUEST", CardInfoRequest.class);
+            if (request.getId().equals(222L)) throw new Exception("UpdateResponseProcess: Exception thrown");
 
         } catch (Exception ex) {
-            log.error("UpdateResponseProcess failed: ", ex);
+            log.error("UpdateResponseProcess failed: {}", ex.getMessage());
+            throw ex;
         }
     }
 }

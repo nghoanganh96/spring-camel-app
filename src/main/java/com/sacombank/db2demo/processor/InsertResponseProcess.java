@@ -3,6 +3,7 @@ package com.sacombank.db2demo.processor;
 import com.google.gson.Gson;
 import com.sacombank.db2demo.constant.DBConstant;
 import com.sacombank.db2demo.entity.CardInformation;
+import com.sacombank.db2demo.model.request.CardInfoRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
@@ -21,9 +22,10 @@ public class InsertResponseProcess implements Processor {
     private final Gson gson;
 
     @Override
-    public void process(Exchange exchange) {
+    public void process(Exchange exchange) throws Exception {
         try {
-            // if (true) throw new Exception("Response exception !!!!");
+            CardInfoRequest request = exchange.getProperty("REQUEST", CardInfoRequest.class);
+            if (request.getCifId().equals("00000")) throw new Exception("InsertResponseProcess: exception thrown !!!!");
 
             List<Map<String, Object>> generatedKeys = exchange.getIn().getHeader(JdbcConstants.JDBC_GENERATED_KEYS_DATA, List.class);
             log.info("InsertResponseProcess -> JDBC_GENERATED_KEYS_DATA = {}", generatedKeys);
@@ -31,6 +33,7 @@ public class InsertResponseProcess implements Processor {
             exchange.getIn().setBody(idGenerated);
         } catch (Exception ex) {
             log.error("InsertDBProcess failed: ", ex);
+            throw ex;
         }
     }
 }

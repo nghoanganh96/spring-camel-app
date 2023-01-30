@@ -15,6 +15,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.connection.CachingConnectionFactory;
+import org.springframework.jms.connection.JmsTransactionManager;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -53,57 +54,67 @@ public class ActiveMQConfig {
         return cachingConnectionFactory;
     }
 
+    // Create Transaction Manager
+    @Bean
+    public PlatformTransactionManager transactionManager(ActiveMQConnectionFactory activeMQConnectionFactory) {
+        return new JmsTransactionManager(activeMQConnectionFactory);
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManagerDatasource(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+
+    // Specify Spring Transaction Management Policy
+    @Bean(name = "TX_REQUIRED")
+    public SpringTransactionPolicy propagationRequired(PlatformTransactionManager transactionManagerDatasource) {
+        SpringTransactionPolicy propagationRequired = new SpringTransactionPolicy();
+        propagationRequired.setTransactionManager(transactionManagerDatasource);
+        propagationRequired.setPropagationBehaviorName("PROPAGATION_REQUIRED");
+        return propagationRequired;
+    }
+
+    @Bean(name = "TX_REQUIRES_NEW")
+    public SpringTransactionPolicy propagationRequiresNew(PlatformTransactionManager transactionManagerDatasource) {
+        SpringTransactionPolicy propagationRequired = new SpringTransactionPolicy();
+        propagationRequired.setTransactionManager(transactionManagerDatasource);
+        propagationRequired.setPropagationBehaviorName("PROPAGATION_REQUIRES_NEW");
+        return propagationRequired;
+    }
+
+    @Bean(name = "TX_REQUIRES_MANDATORY")
+    public SpringTransactionPolicy propagationRequiresMandatory(PlatformTransactionManager transactionManagerDatasource) {
+        SpringTransactionPolicy propagationRequired = new SpringTransactionPolicy();
+        propagationRequired.setTransactionManager(transactionManagerDatasource);
+        propagationRequired.setPropagationBehaviorName("PROPAGATION_REQUIRES_MANDATORY");
+        return propagationRequired;
+    }
+
     @Bean(name = "activemqComponent")
-    public Component activeMQComponent() {
-        var jmsComponent = JmsComponent.jmsComponentAutoAcknowledge(this.connectionFactory());
+    public Component activeMQComponent(PlatformTransactionManager transactionManager, ActiveMQConnectionFactory activeMQConnectionFactory) {
+        var jmsComponent = JmsComponent.jmsComponent(activeMQConnectionFactory);
+        jmsComponent.setTransacted(true);
+        jmsComponent.setTransactionManager(transactionManager);
+//        jmsComponent.setCacheLevelName("CACHE_CONSUMER");
         return jmsComponent;
     }
 
     @Bean
-    public JmsTemplate jmsTemplate() {
-        JmsTemplate jmsTemplate = new JmsTemplate(this.connectionFactory());
+    public JmsTemplate jmsTemplate(ActiveMQConnectionFactory activeMQConnectionFactory) {
+        JmsTemplate jmsTemplate = new JmsTemplate(activeMQConnectionFactory);
         jmsTemplate.setDeliveryPersistent(false);
         return jmsTemplate;
     }
 
     @Bean
-    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
+    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(ActiveMQConnectionFactory activeMQConnectionFactory) {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-        factory.setConnectionFactory(this.activeMQConnectionFactory());
+        factory.setConnectionFactory(activeMQConnectionFactory);
 
         // true: using jms topic, false: using jms queue
         // factory.setPubSubDomain(false);
         return factory;
     }
 
-    // Create Transaction Manager
-    @Bean
-    public PlatformTransactionManager transactionManager(DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
-    }
 
-    // Specify Spring Transaction Management Policy
-    @Bean(name = "TX_REQUIRED")
-    public SpringTransactionPolicy propagationRequired(PlatformTransactionManager transactionManager) {
-        SpringTransactionPolicy propagationRequired = new SpringTransactionPolicy();
-        propagationRequired.setTransactionManager(transactionManager);
-        propagationRequired.setPropagationBehaviorName("PROPAGATION_REQUIRED");
-        return propagationRequired;
-    }
-
-    @Bean(name = "TX_REQUIRES_NEW")
-    public SpringTransactionPolicy propagationRequiresNew(PlatformTransactionManager transactionManager) {
-        SpringTransactionPolicy propagationRequired = new SpringTransactionPolicy();
-        propagationRequired.setTransactionManager(transactionManager);
-        propagationRequired.setPropagationBehaviorName("PROPAGATION_REQUIRES_NEW");
-        return propagationRequired;
-    }
-
-    @Bean(name = "TX_REQUIRES_MANDATORY")
-    public SpringTransactionPolicy propagationRequiresMandatory(PlatformTransactionManager transactionManager) {
-        SpringTransactionPolicy propagationRequired = new SpringTransactionPolicy();
-        propagationRequired.setTransactionManager(transactionManager);
-        propagationRequired.setPropagationBehaviorName("PROPAGATION_REQUIRES_MANDATORY");
-        return propagationRequired;
-    }
 }

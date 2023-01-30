@@ -5,7 +5,6 @@
     <!--    Spring-Jdbc component-->
     <route id="InsertCardInfo">
         <from uri="activemq-demo:queue:anhnh.test.message.request?asyncConsumer=true" />
-        <transacted ref="TX_REQUIRED"/>
         <log message="Request Body in InsertCardInfo: ${body}" />
         <process ref="insertRequestProcess" />
         <setHeader name="CamelRetrieveGeneratedKeys">
@@ -85,14 +84,12 @@
     </route>
 
     <!--    Spring-jdbc component: Delete -->
-    <route id="UpdateCardInfo">
-        <from uri="direct:updateCardInfo" />
-        <process ref="preUpdateRequestProcess" />
-        <log message="Request Body of preUpdateRequestProcess: ${body}" />
+    <route id="DeleteCardInfo">
+        <from uri="direct:deleteCardInfo" />
+        <log message="Request Body of DeleteCardInfo: ${body}" />
         <to uri="direct:selectById"/>
-        <process ref="updateRequestProcess" />
+        <process ref="deleteRequestProcess" />
         <to uri="spring-jdbc:dataSource"/>
-        <process ref="updateResponseProcess" />
     </route>
 
 </routes>

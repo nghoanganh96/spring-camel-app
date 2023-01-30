@@ -24,6 +24,7 @@ public class InsertRequestProcess implements Processor {
             String body = exchange.getIn().getBody(String.class);
 
             CardInfoRequest cardInfoRequest = gson.fromJson(body, CardInfoRequest.class);
+            exchange.setProperty("REQUEST", cardInfoRequest);
 
             String query = String.format("INSERT INTO CARD_INFORMATION(CIF_ID, CUST_NAME, CARD_NUMBER, CARD_TYPE, UUID, CREATED_DATE, MODIFIED_DATE) VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s')"
                     , cardInfoRequest.getCifId()
