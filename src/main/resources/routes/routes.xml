@@ -2,64 +2,20 @@
         xmlns="http://camel.apache.org/schema/spring"
         xsi:schemaLocation="http://camel.apache.org/schema/spring https://camel.apache.org/schema/spring/camel-spring.xsd">
 
-<!--    &lt;!&ndash;    Spring-Jdbc component&ndash;&gt;-->
-<!--    <route id="InsertCardInfo">-->
-<!--        <from uri="activemq-demo:queue:anhnh.test.message.request?asyncConsumer=true" />-->
-<!--        <transacted ref="TX_REQUIRED"/>-->
-<!--        <log message="Request Body in InsertCardInfo: ${body}" />-->
-<!--        <process ref="insertRequestProcess" />-->
-<!--        <setHeader name="CamelRetrieveGeneratedKeys">-->
-<!--            <constant>true</constant>-->
-<!--        </setHeader>-->
-<!--        <log message="Request Body of insertResponseProcess: ${body}" />-->
-<!--        <to uri="spring-jdbc:dataSource"/>-->
-<!--        <process ref="insertResponseProcess" />-->
-<!--        <to uri="activemq-demo:queue:anhnh.test.message.response" />-->
-<!--    </route>-->
-
-<!--    &lt;!&ndash;    Sql component&ndash;&gt;-->
-<!--    <route id="InsertCardInfo-Sql">-->
-<!--        <from uri="activemq-demo:queue:anhnh.test.insert-sql.request?asyncConsumer=true" />-->
-<!--        <transacted ref="TX_REQUIRED"/>-->
-<!--        <log message="Request Body in InsertCardInfo-Sql: ${body}" />-->
-<!--        <process ref="insertSqlRequestProcess" />-->
-<!--        <log message="Request Body of insertSqlRequestProcess: ${body}" />-->
-<!--        <to uri="sql:INSERT INTO CARD_INFORMATION(CIF_ID, CUST_NAME, CARD_NUMBER, CARD_TYPE, UUID, CREATED_DATE, MODIFIED_DATE) VALUES(:#CIF_ID, :#CUST_NAME, :#CARD_NUMBER, :#CARD_TYPE, :#UUID, :#CREATED_DATE, :#MODIFIED_DATE)"/>-->
-<!--        <process ref="insertSqlResponseProcess" />-->
-<!--        <to uri="activemq-demo:queue:anhnh.test.insert-sql.response" />-->
-<!--    </route>-->
-
-<!--    <route id="SelectAllCardInfo">-->
-<!--        <from uri="direct:selectAll" />-->
-<!--        <process ref="selectAllRequestProcess" />-->
-<!--        <log message="Request Body of selectAllRequestProcess: ${body}" />-->
-<!--        <to uri="spring-jdbc:dataSource"/>-->
-<!--        <log message="Response Body of selectAllRequestProcess: ${body}" />-->
-<!--&lt;!&ndash;        <process ref="selectAllResponseProcess" />&ndash;&gt;-->
-<!--        <log message="Response Body of selectAllResponseProcess: ${body}" />-->
-<!--&lt;!&ndash;        <to uri="activemq-demo:queue:anhnh.test.selectall.response" />&ndash;&gt;-->
-<!--    </route>-->
-
-<!--    <route id="SelectByIdCardInfo">-->
-<!--        <from uri="direct:select" />-->
-<!--        <process ref="selectByIdRequestProcess" />-->
-<!--        <log message="Request Body of SelectByIdCardInfo: ${body}" />-->
-<!--        <to uri="spring-jdbc:dataSource"/>-->
-<!--        <log message="Response Body of selectByIdRequestProcess: ${body}" />-->
-<!--&lt;!&ndash;        <process ref="selectAllResponseProcess" />&ndash;&gt;-->
-<!--&lt;!&ndash;        <log message="Response Body of selectByIdRequestProcess: ${body}" />&ndash;&gt;-->
-<!--        &lt;!&ndash;        <to uri="activemq-demo:queue:anhnh.test.selectall.response" />&ndash;&gt;-->
-<!--    </route>-->
-
-    <route id="JpaSaveCardInfo">
-        <from uri="activemq-demo:queue:anhnh.save-jpa.request?asyncConsumer=true" />
-        <process ref="saveJpaRequestProcess" />
-        <setHeader name="CamelRetrieveGeneratedKeys">
-            <constant>true</constant>
-        </setHeader>
-        <log message="Request Body of insertResponseProcess: ${body}" />
-        <to uri="jpa:com.sacombank.db2demo.entity.CardInformation"/>
-        <process ref="saveJpaResponseProcess" />
-        <to uri="activemq-demo:queue:anhnh.save-jpa.response" />
+    <route id="SpringJpaSaveCardInfo">
+        <from uri="activemq-demo:queue:anhnh.spring.save.request?asyncConsumer=true" />
+        <log message="Request Body of SpringJpaSaveCardInfo: ${body}" />
+        <bean ref="cardInfoService" method="saveCardInfo"/>
+        <log message="Request Body of saveCardInfo: ${body}" />
+        <to uri="activemq-demo:queue:anhnh.spring.save.response" />
     </route>
+
+    <route id="SpringJpaGetOneCardInfo">
+        <from uri="activemq-demo:queue:anhnh.spring.getone.request?asyncConsumer=true" />
+        <log message="Request Body of SpringJpaGetOneCardInfo: ${body}" />
+        <bean ref="cardInfoService" method="getOneCardInfo"/>
+        <log message="Request Body of getOneCardInfo: ${body}" />
+        <to uri="activemq-demo:queue:anhnh.spring.getone.response" />
+    </route>
+
 </routes>

@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.camel.component.sql.SqlConstants;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -43,7 +42,7 @@ public class InsertSqlRequestProcess implements Processor {
             map.put(DBConstant.CardInformation.Column.CREATED_DATE, nowDateTimeStr);
             //map.put(DBConstant.CardInformation.Column.MODIFIED_DATE, nowDateTimeStr);
 
-            exchange.getIn().setHeader(SqlConstants.SQL_RETRIEVE_GENERATED_KEYS, true);
+            exchange.getIn().setHeader("SqlConstants.SQL_RETRIEVE_GENERATED_KEYS", true);
             exchange.getIn().setHeader(DBConstant.CardInformation.Column.MODIFIED_DATE, nowDateTimeStr);
             exchange.getIn().setBody(map);
 

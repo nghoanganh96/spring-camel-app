@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.camel.component.jdbc.JdbcConstants;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +24,7 @@ public class InsertResponseProcess implements Processor {
         try {
             // if (true) throw new Exception("Response exception !!!!");
 
-            List<Map<String, Object>> generatedKeys = exchange.getIn().getHeader(JdbcConstants.JDBC_GENERATED_KEYS_DATA, List.class);
+            List<Map<String, Object>> generatedKeys = exchange.getIn().getHeader("JdbcConstants.JDBC_GENERATED_KEYS_DATA", List.class);
             log.info("InsertResponseProcess -> JDBC_GENERATED_KEYS_DATA = {}", generatedKeys);
             Long idGenerated = (Long)generatedKeys.get(0).get(DBConstant.CardInformation.Column.ID);
             exchange.getIn().setBody(CardInformation.builder().id(idGenerated).build());

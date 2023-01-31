@@ -45,29 +45,16 @@ public class CardController {
         return ResponseEntity.ok(true);
     }
 
-    @PostMapping("/message/insert-sql")
+    @PostMapping("/message/save")
     public ResponseEntity<?> messageInsertSql(@RequestBody CardInfoRequest request) {
-        messageService.sendMessageToQueue(Constant.QUEUE_NAME_INSERT_SQL_REQUEST, request);
+        messageService.sendMessageToQueue("anhnh.spring.save.request", request);
 
         return ResponseEntity.ok(true);
     }
 
-    @GetMapping("/message/get-all")
-    public ResponseEntity<?> getAllCardInfo() {
-        var response = producerTemplate.requestBody("direct:selectAll", null, List.class);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/message/get/{id}")
-    public ResponseEntity<?> getCardInfo(@PathVariable Long id) {
-        var response = producerTemplate.requestBody("direct:select", gson.toJson(id), List.class);
-
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/message/jpa/save")
-    public ResponseEntity<?> messageInsertJpa(@RequestBody CardInfoRequest request) {
-        messageService.sendMessageToQueue("anhnh.save-jpa.request", request);
+    @GetMapping("/message/{id}")
+    public ResponseEntity<?> messageInsertSql(@PathVariable Long id) {
+        messageService.sendMessageToQueue("anhnh.spring.getone.request", id);
 
         return ResponseEntity.ok(true);
     }

@@ -3,14 +3,10 @@ package com.sacombank.db2demo.config;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.camel.Component;
 import org.apache.camel.component.jms.JmsComponent;
-import org.apache.camel.component.sql.SqlComponent;
 import org.apache.camel.spring.spi.SpringTransactionPolicy;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
@@ -76,6 +72,7 @@ public class ActiveMQConfig {
         return factory;
     }
 
+/*
     // Create Transaction Manager
     @Bean
     public PlatformTransactionManager transactionManager(DataSource dataSource) {
@@ -106,4 +103,6 @@ public class ActiveMQConfig {
         propagationRequired.setPropagationBehaviorName("PROPAGATION_REQUIRES_MANDATORY");
         return propagationRequired;
     }
+*/
+
 }
