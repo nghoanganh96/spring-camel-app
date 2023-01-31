@@ -3,6 +3,7 @@ package com.sacombank.db2demo.controller;
 import com.google.gson.Gson;
 import com.sacombank.db2demo.constant.Constant;
 import com.sacombank.db2demo.entity.CardInformation;
+import com.sacombank.db2demo.model.ObjectResponse;
 import com.sacombank.db2demo.model.request.CardInfoRequest;
 import com.sacombank.db2demo.service.CardInfoService;
 import com.sacombank.db2demo.service.MessageService;
@@ -40,16 +41,17 @@ public class CardController {
 //        return ResponseEntity.ok(cardInfoService.delete(id));
 //    }
 
-    @PostMapping("/message")
-    public ResponseEntity<?> message(@RequestBody CardInfoRequest request) {
-        messageService.sendMessageToQueue(Constant.QUEUE_NAME_REQUEST, request);
+    @PostMapping("/message/insert-sql")
+    public ResponseEntity<?> messageInsertSql(@RequestBody CardInfoRequest request) {
+        messageService.sendMessageToQueue(Constant.QUEUE_NAME_INSERT_SQL_REQUEST, request);
 
         return ResponseEntity.ok(true);
     }
 
-    @PostMapping("/message/insert-sql")
-    public ResponseEntity<?> messageInsertSql(@RequestBody CardInfoRequest request) {
-        messageService.sendMessageToQueue(Constant.QUEUE_NAME_INSERT_SQL_REQUEST, request);
+
+    @PostMapping("/message")
+    public ResponseEntity<?> message(@RequestBody CardInfoRequest request) {
+        messageService.sendMessageToQueue(Constant.QUEUE_NAME_REQUEST, request);
 
         return ResponseEntity.ok(true);
     }
@@ -62,7 +64,7 @@ public class CardController {
 
     @GetMapping("/message/get/{id}")
     public ResponseEntity<?> getCardInfo(@PathVariable Long id) {
-        var response = producerTemplate.requestBody("direct:selectById", gson.toJson(id), CardInformation.class);
+        var response = producerTemplate.requestBody("direct:selectById", gson.toJson(id));
 
         return ResponseEntity.ok(response);
     }

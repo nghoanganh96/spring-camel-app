@@ -28,6 +28,5 @@ public class ConnectionInitializer {
     public void loadCamelComponent() {
         // activeMQName using in Camel Routes
         camelContext.addComponent(activeMQName, activemqComponent);
-        // camelContext.getComponent("sql", SqlComponent.class).setDataSource(dataSource);
     }
 }

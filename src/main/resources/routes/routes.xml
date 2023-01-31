@@ -16,40 +16,6 @@
         <to uri="activemq-demo:queue:anhnh.test.message.response" />
     </route>
 
-    <!--    Sql component: Insert -->
-    <route id="InsertCardInfoSql">
-        <from uri="activemq-demo:queue:anhnh.test.insert-sql.request?asyncConsumer=true" />
-        <transacted ref="TX_REQUIRED"/>
-        <log message="Request Body in InsertCardInfo-Sql: ${body}" />
-        <process ref="insertSqlRequestProcess" />
-        <log message="Request Body of insertSqlRequestProcess: ${body}" />
-        <to uri="sql:INSERT INTO CARD_INFORMATION(CIF_ID, CUST_NAME, CARD_NUMBER, CARD_TYPE, UUID, CREATED_DATE, MODIFIED_DATE) VALUES(:#CIF_ID, :#CUST_NAME, :#CARD_NUMBER, :#CARD_TYPE, :#UUID, :#CREATED_DATE, :#MODIFIED_DATE)"/>
-        <process ref="insertSqlResponseProcess" />
-        <to uri="activemq-demo:queue:anhnh.test.insert-sql.response" />
-    </route>
-
-    <!--    Sql component: Update -->
-    <route id="UpdateCardInfoSql">
-        <from uri="direct:UpdateCardInfoSql" />
-        <transacted ref="TX_REQUIRED"/>
-        <process ref="sqlPreUpdateRequestProcess" />
-        <log message="Request Body of preUpdateRequestProcess: ${body}" />
-        <to uri="direct:FindOneCardInfoSql"/>
-        <process ref="sqlUpdateRequestProcess" />
-        <to uri="sql:INSERT INTO CARD_INFORMATION(CIF_ID, CUST_NAME, CARD_NUMBER, CARD_TYPE, UUID, CREATED_DATE, MODIFIED_DATE) VALUES(:#CIF_ID, :#CUST_NAME, :#CARD_NUMBER, :#CARD_TYPE, :#UUID, :#CREATED_DATE, :#MODIFIED_DATE)"/>
-        <process ref="insertSqlResponseProcess" />
-    </route>
-
-    <!--    Sql component: Find One By Id -->
-    <route id="FindOneCardInfoSql">
-        <from uri="direct:FindOneCardInfoSql" />
-        <process ref="sqlFindByIdRequestProcess" />
-        <log message="Request Body of insertSqlRequestProcess: ${body}" />
-        <to uri="sql:SELECT * FROM CARD_INFORMATION WHERE ID = :#VALUE"/>
-        <process ref="sqlHandleListResponseProcess" />
-        <process ref="sqlFindByIdResponseProcess" />
-    </route>
-
     <!--    Spring-jdbc -->
     <route id="SelectAllCardInfo">
         <from uri="direct:selectAll" />
@@ -90,6 +56,44 @@
         <to uri="direct:selectById"/>
         <process ref="deleteRequestProcess" />
         <to uri="spring-jdbc:dataSource"/>
+    </route>
+
+
+
+
+
+    <!--    Sql component: Insert -->
+    <route id="InsertCardInfoSql">
+        <from uri="activemq-demo:queue:anhnh.test.insert-sql.request?asyncConsumer=true" />
+        <transacted ref="TX_REQUIRED"/>
+        <log message="Request Body in InsertCardInfo-Sql: ${body}" />
+        <process ref="insertSqlRequestProcess" />
+        <log message="Request Body of insertSqlRequestProcess: ${body}" />
+        <to uri="sql:INSERT INTO CARD_INFORMATION(CIF_ID, CUST_NAME, CARD_NUMBER, CARD_TYPE, UUID, CREATED_DATE, MODIFIED_DATE) VALUES(:#CIF_ID, :#CUST_NAME, :#CARD_NUMBER, :#CARD_TYPE, :#UUID, :#CREATED_DATE, :#MODIFIED_DATE)"/>
+        <process ref="insertSqlResponseProcess" />
+        <to uri="activemq-demo:queue:anhnh.test.insert-sql.response" />
+    </route>
+
+    <!--    Sql component: Update -->
+    <route id="UpdateCardInfoSql">
+        <from uri="direct:UpdateCardInfoSql" />
+        <transacted ref="TX_REQUIRED"/>
+        <process ref="sqlPreUpdateRequestProcess" />
+        <log message="Request Body of preUpdateRequestProcess: ${body}" />
+        <to uri="direct:FindOneCardInfoSql"/>
+        <process ref="sqlUpdateRequestProcess" />
+        <to uri="sql:INSERT INTO CARD_INFORMATION(CIF_ID, CUST_NAME, CARD_NUMBER, CARD_TYPE, UUID, CREATED_DATE, MODIFIED_DATE) VALUES(:#CIF_ID, :#CUST_NAME, :#CARD_NUMBER, :#CARD_TYPE, :#UUID, :#CREATED_DATE, :#MODIFIED_DATE)"/>
+        <process ref="insertSqlResponseProcess" />
+    </route>
+
+    <!--    Sql component: Find One By Id -->
+    <route id="FindOneCardInfoSql">
+        <from uri="direct:FindOneCardInfoSql" />
+        <process ref="sqlFindByIdRequestProcess" />
+        <log message="Request Body of insertSqlRequestProcess: ${body}" />
+        <to uri="sql:SELECT * FROM CARD_INFORMATION WHERE ID = :#VALUE"/>
+        <process ref="sqlHandleListResponseProcess" />
+        <process ref="sqlFindByIdResponseProcess" />
     </route>
 
 </routes>
