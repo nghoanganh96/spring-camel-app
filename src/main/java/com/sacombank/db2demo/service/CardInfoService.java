@@ -1,9 +1,9 @@
 package com.sacombank.db2demo.service;
 
 import com.google.gson.Gson;
-import com.sacombank.db2demo.entity.CardInformation;
+import com.sacombank.db2demo.entity.card.CardInformation;
 import com.sacombank.db2demo.model.request.CardInfoRequest;
-import com.sacombank.db2demo.repository.CardInformationRepository;
+import com.sacombank.db2demo.repository.card.CardInformationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

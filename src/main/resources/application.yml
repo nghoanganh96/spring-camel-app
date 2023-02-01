@@ -4,9 +4,17 @@ server:
 spring:
   datasource:
     url: jdbc:db2://localhost:50000/testdb
-#    username: db2card
     username: db2inst1
-    password: password
+    password: cGFzc3dvcmQ=
+    driver-class-name: com.ibm.db2.jcc.DB2Driver
+
+  user-datasource:
+    url: jdbc:mysql://localhost:3306/user
+    username: root
+    password: cm9vdA==
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hbm2ddl-auto:
+
   jpa:
     generate-ddl: true
     hibernate:
@@ -15,6 +23,10 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
 # to keep the JVM running
 camel:
