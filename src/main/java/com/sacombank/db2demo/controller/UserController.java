@@ -37,17 +37,4 @@ public class UserController {
         return ResponseEntity.ok(userService.delete(id));
     }
 
-//    @PostMapping("/message/save")
-//    public ResponseEntity<?> messageInsertSql(@RequestBody CardInfoRequest request) {
-//        messageService.sendMessageToQueue("anhnh.spring.save.request", request);
-//
-//        return ResponseEntity.ok(true);
-//    }
-//
-//    @GetMapping("/message/{id}")
-//    public ResponseEntity<?> messageInsertSql(@PathVariable Long id) {
-//        messageService.sendMessageToQueue("anhnh.spring.getone.request", id);
-//
-//        return ResponseEntity.ok(true);
-//    }
 }

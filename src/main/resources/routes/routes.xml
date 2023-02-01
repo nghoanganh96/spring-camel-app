@@ -18,4 +18,12 @@
         <to uri="activemq-demo:queue:anhnh.spring.getone.response" />
     </route>
 
+    <route id="SpringJpaAddCardInfoByUser">
+        <from uri="activemq-demo:queue:anhnh.spring.addcardbyuser.request?asyncConsumer=true" />
+        <log message="Request Body of RouteId SpringJpaAddCardInfoByUser: ${body}" />
+        <bean ref="cardInfoService" method="addCardInfoByUser"/>
+        <log message="Request Body of Method addCardInfoByUser: ${body}" />
+        <to uri="activemq-demo:queue:anhnh.spring.addcardbyuser.response" />
+    </route>
+
 </routes>
