@@ -6,6 +6,7 @@ import com.sacombank.db2demo.entity.user.User;
 import com.sacombank.db2demo.model.ObjectResponse;
 import com.sacombank.db2demo.model.request.CardInfoRequest;
 import com.sacombank.db2demo.model.request.UserCardInfoRequest;
+import com.sacombank.db2demo.model.request.UserRequest;
 import com.sacombank.db2demo.repository.card.CardInformationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -84,25 +86,77 @@ public class CardInfoService {
             return gson.toJson(ObjectResponse.buildFailed("Message Request is null or blank"));
         }
 
-        UserCardInfoRequest request = gson.fromJson(body, UserCardInfoRequest.class);
+        try {
+            UserCardInfoRequest request = gson.fromJson(body, UserCardInfoRequest.class);
 
-        // get User info from DB
-        User user = userService.getOneUser(request.getUserId());
-        if (null == user) {
-            return gson.toJson(ObjectResponse.buildFailed("Cannot found User by id = " + request.getUserId()));
+            // get User info from DB
+            var userOR = userService.getOneUser(request.getUserId());
+            if (userOR.getCode() == -1) {
+                return gson.toJson(userOR);
+            }
+            // extract cifid from user and process the save cardinfo
+            User user = (User) userOR.getData();
+            String uuid = UUID.randomUUID().toString();
+            var cardInfoEntity = CardInformation.builder()
+                    .uuid(uuid)
+                    .cifId(user.getCifId()) // extract cifid from user
+                    .cardNumber(request.getCardNumber())
+                    .cardType(request.getCardType())
+                    .custName(request.getCustName())
+                    .build();
+
+            var response = cardInfoRepository.save(cardInfoEntity);
+            return gson.toJson(ObjectResponse.buildSuccess(response));
+        } catch (Exception ex) {
+            log.error("Error in addCardInfoByUser: ", ex);
+            return gson.toJson(ObjectResponse.buildFailed(ex.getMessage()));
+        }
+    }
+
+    @Transactional
+    public ObjectResponse getOneCardInfoWithSP(Long idRequest) {
+        var response = cardInfoRepository.spGetCardInfoById(idRequest);
+
+        return response.map(ObjectResponse::buildSuccess).orElseGet(() -> ObjectResponse.buildFailed("Cannot found CardInfo with id = " + idRequest));
+    }
+
+    @Transactional
+    public String addCardInfoAndUserWithSP(String body) {
+        if (Strings.isBlank(body)) {
+            return gson.toJson(ObjectResponse.buildFailed("Message Request is null or blank"));
         }
 
-        // extract cifid from user and process the save cardinfo
-        String uuid = UUID.randomUUID().toString();
-        var cardInfoEntity = CardInformation.builder()
-                .uuid(uuid)
-                .cifId(user.getCifId()) // extract cifid from user
-                .cardNumber(request.getCardNumber())
-                .cardType(request.getCardType())
-                .custName(request.getCustName())
-                .build();
+        try {
+            UserCardInfoRequest request = gson.fromJson(body, UserCardInfoRequest.class);
 
-        var response = cardInfoRepository.save(cardInfoEntity);
-        return gson.toJson(ObjectResponse.buildSuccess(response));
+            // save user
+            var userRequest = UserRequest.builder()
+                    .cifId(request.getCifId())
+                    .moreInfo(request.getMoreInfo())
+                    .build();
+            var userResponse = userService.saveWithStoreProc(userRequest);
+
+            if (userResponse.getCode() == -1) {
+                throw new Exception("Save User has error: %s" + userResponse.getMessage());
+            }
+
+            // extract cifid from user and process the save cardinfo
+            User user = (User) userResponse.getData();
+            String uuid = UUID.randomUUID().toString();
+
+            long newId = cardInfoRepository.spSaveCardInfo(
+                    user.getCifId()
+                    , request.getCustName()
+                    , request.getCardNumber()
+                    , request.getCardType()
+                    , uuid
+                    , LocalDateTime.now()
+                    , LocalDateTime.now());
+
+            return gson.toJson(getOneCardInfoWithSP(newId));
+        } catch (Exception ex) {
+            log.error("Error in addCardInfoAndUserWithSP: ", ex);
+            return gson.toJson(ObjectResponse.buildFailed(ex.getMessage()));
+        }
     }
 }

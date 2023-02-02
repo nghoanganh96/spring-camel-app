@@ -26,4 +26,20 @@
         <to uri="activemq-demo:queue:anhnh.spring.addcardbyuser.response" />
     </route>
 
+    <!-- Store procedure -->
+    <route id="SpringJpaAddCardInfoByUserWithSP">
+        <from uri="activemq-demo:queue:anhnh.spring.sp.addcarduser.request?asyncConsumer=true" />
+        <log message="Request Body of RouteId SpringJpaAddCardInfoByUserWithSP: ${body}" />
+        <bean ref="cardInfoService" method="addCardInfoAndUserWithSP"/>
+        <log message="Request Body of Method addCardInfoAndUserWithSP: ${body}" />
+        <to uri="activemq-demo:queue:anhnh.spring.sp.addcarduser.response" />
+    </route>
+
+    <route id="SpringJpaGetCardInfoByIdWithSP">
+        <from uri="direct:getcardbyidwithsp" />
+        <log message="Request Body of RouteId SpringJpaGetCardInfoByIdWithSP: ${body}" />
+        <bean ref="cardInfoService" method="getOneCardInfoWithSP"/>
+        <log message="Request Body of Method getOneCardInfoWithSP: ${body}" />
+    </route>
+
 </routes>

@@ -32,6 +32,11 @@ public class UserController {
         return ResponseEntity.ok(userService.save(request));
     }
 
+    @PostMapping("/save/proc")
+    public ResponseEntity<?> saveStoreProc(@RequestBody UserRequest request) {
+        return ResponseEntity.ok(userService.saveWithStoreProc(request));
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         return ResponseEntity.ok(userService.delete(id));
