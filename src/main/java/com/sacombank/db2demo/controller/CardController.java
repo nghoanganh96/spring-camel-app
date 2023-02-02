@@ -23,7 +23,9 @@ public class CardController {
     private final Gson gson;
     private final ProducerTemplate producerTemplate;
 
-    // Card Information
+    /**
+        Jpa
+    */
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         return ResponseEntity.ok(cardInfoService.getById(id));
@@ -39,6 +41,9 @@ public class CardController {
         return ResponseEntity.ok(cardInfoService.delete(id));
     }
 
+    /**
+        Spring data jpa
+    */
     @PostMapping("/message/save")
     public ResponseEntity<?> springJpaSave(@RequestBody CardInfoRequest request) {
         messageService.sendMessageToQueue("anhnh.spring.save.request", request);
@@ -53,18 +58,13 @@ public class CardController {
         return ResponseEntity.ok(true);
     }
 
-    @PostMapping("message/addcardbyuser")
-    public ResponseEntity<?> springJpaAddCardByUser(@RequestBody UserCardInfoRequest request) {
-
-        messageService.sendMessageToQueue("anhnh.spring.addcardbyuser.request", request);
-
-        return ResponseEntity.ok(true);
-    }
-
-    @PostMapping("message/addcardanduser/sp")
+    /**
+        Store procedure
+    */
+    @PostMapping("message/addcarduser/sp")
     public ResponseEntity<?> springJpaAddCardByUserWithSP(@RequestBody UserCardInfoRequest request) {
 
-        messageService.sendMessageToQueue("anhnh.spring.sp.addcardanduser.request", request);
+        messageService.sendMessageToQueue("anhnh.spring.sp.addcarduser.request", request);
 
         return ResponseEntity.ok(true);
     }

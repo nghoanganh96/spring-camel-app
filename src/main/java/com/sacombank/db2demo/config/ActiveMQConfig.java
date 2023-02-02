@@ -4,6 +4,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.camel.Component;
 import org.apache.camel.component.jms.JmsComponent;
 import org.apache.camel.spring.spi.SpringTransactionPolicy;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.connection.CachingConnectionFactory;
+import org.springframework.jms.connection.JmsTransactionManager;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -50,8 +52,10 @@ public class ActiveMQConfig {
     }
 
     @Bean(name = "activemqComponent")
-    public Component activeMQComponent() {
+    public Component activeMQComponent(@Qualifier("jmsTransactionManagerMsg") PlatformTransactionManager transactionManager) {
         var jmsComponent = JmsComponent.jmsComponentAutoAcknowledge(this.connectionFactory());
+        jmsComponent.setTransacted(true);
+        jmsComponent.setTransactionManager(transactionManager);
         return jmsComponent;
     }
 
@@ -72,37 +76,35 @@ public class ActiveMQConfig {
         return factory;
     }
 
-/*
     // Create Transaction Manager
-    @Bean
-    public PlatformTransactionManager transactionManager(DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
+    @Bean("jmsTransactionManagerMsg")
+    public PlatformTransactionManager transactionManager(@Qualifier("activemq-db2") ActiveMQConnectionFactory activeMQConnectionFactory) {
+        return new JmsTransactionManager(activeMQConnectionFactory);
     }
 
     // Specify Spring Transaction Management Policy
-    @Bean(name = "TX_REQUIRED")
-    public SpringTransactionPolicy propagationRequired(PlatformTransactionManager transactionManager) {
+    @Bean(name = "txRequired")
+    public SpringTransactionPolicy propagationRequired(@Qualifier("jmsTransactionManagerMsg") PlatformTransactionManager transactionManager) {
         SpringTransactionPolicy propagationRequired = new SpringTransactionPolicy();
         propagationRequired.setTransactionManager(transactionManager);
         propagationRequired.setPropagationBehaviorName("PROPAGATION_REQUIRED");
         return propagationRequired;
     }
-
-    @Bean(name = "TX_REQUIRES_NEW")
-    public SpringTransactionPolicy propagationRequiresNew(PlatformTransactionManager transactionManager) {
-        SpringTransactionPolicy propagationRequired = new SpringTransactionPolicy();
-        propagationRequired.setTransactionManager(transactionManager);
-        propagationRequired.setPropagationBehaviorName("PROPAGATION_REQUIRES_NEW");
-        return propagationRequired;
-    }
-
-    @Bean(name = "TX_REQUIRES_MANDATORY")
-    public SpringTransactionPolicy propagationRequiresMandatory(PlatformTransactionManager transactionManager) {
-        SpringTransactionPolicy propagationRequired = new SpringTransactionPolicy();
-        propagationRequired.setTransactionManager(transactionManager);
-        propagationRequired.setPropagationBehaviorName("PROPAGATION_REQUIRES_MANDATORY");
-        return propagationRequired;
-    }
-*/
+//
+//    @Bean(name = "TX_REQUIRES_NEW")
+//    public SpringTransactionPolicy propagationRequiresNew(PlatformTransactionManager transactionManager) {
+//        SpringTransactionPolicy propagationRequired = new SpringTransactionPolicy();
+//        propagationRequired.setTransactionManager(transactionManager);
+//        propagationRequired.setPropagationBehaviorName("PROPAGATION_REQUIRES_NEW");
+//        return propagationRequired;
+//    }
+//
+//    @Bean(name = "TX_REQUIRES_MANDATORY")
+//    public SpringTransactionPolicy propagationRequiresMandatory(PlatformTransactionManager transactionManager) {
+//        SpringTransactionPolicy propagationRequired = new SpringTransactionPolicy();
+//        propagationRequired.setTransactionManager(transactionManager);
+//        propagationRequired.setPropagationBehaviorName("PROPAGATION_REQUIRES_MANDATORY");
+//        return propagationRequired;
+//    }
 
 }

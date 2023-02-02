@@ -4,6 +4,7 @@ import com.sacombank.db2demo.service.EncryptService;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -37,7 +38,7 @@ public class CardConfig {
 
     private final EncryptService encryptService;
 
-    @Value("${spring.user-datasource.hbm2ddl-auto: }")
+    @Value("${spring.user-datasource.hbm2ddl-auto-db2: }")
     String hbm2ddlAuto;
 
     @Primary
@@ -68,7 +69,9 @@ public class CardConfig {
 
         Map<String, String> properties = new HashMap<>();
         properties.put("hibernate.dialect", "org.hibernate.dialect.DB2Dialect");
-        properties.put("hibernate.hbm2ddl.auto", "");
+        if (Strings.isNotBlank(hbm2ddlAuto)) {
+            properties.put("hibernate.hbm2ddl.auto", hbm2ddlAuto);
+        }
 
         return builder
                 .dataSource(cardDataSource)

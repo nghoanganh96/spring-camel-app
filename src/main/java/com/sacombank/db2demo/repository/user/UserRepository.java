@@ -11,12 +11,12 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Procedure(procedureName = "AddNewUser")
+    @Procedure(procedureName = "SP_ADD_NEW_USER")
     long spInsertNewUser(String cifId, String moreInfo);
 
-    @Procedure(procedureName = "GetUserById")
+    @Procedure(procedureName = "SP_GET_USER_BY_ID")
     Optional<User> spGetUserById(long id);
 
-    @Procedure(procedureName = "GetAllUser")
+    @Procedure(procedureName = "SP_GET_ALL_USERS")
     List<User> spGetAllUser();
 }

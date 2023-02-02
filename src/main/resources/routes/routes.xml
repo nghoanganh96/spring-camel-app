@@ -4,9 +4,11 @@
 
     <route id="SpringJpaSaveCardInfo">
         <from uri="activemq-demo:queue:anhnh.spring.save.request?asyncConsumer=true" />
+        <transacted/>
         <log message="Request Body of SpringJpaSaveCardInfo: ${body}" />
         <bean ref="cardInfoService" method="saveCardInfo"/>
         <log message="Request Body of saveCardInfo: ${body}" />
+        <process ref="handleProcess"/>
         <to uri="activemq-demo:queue:anhnh.spring.save.response" />
     </route>
 
@@ -18,20 +20,14 @@
         <to uri="activemq-demo:queue:anhnh.spring.getone.response" />
     </route>
 
-    <route id="SpringJpaAddCardInfoByUser">
-        <from uri="activemq-demo:queue:anhnh.spring.addcardbyuser.request?asyncConsumer=true" />
-        <log message="Request Body of RouteId SpringJpaAddCardInfoByUser: ${body}" />
-        <bean ref="cardInfoService" method="addCardInfoByUser"/>
-        <log message="Request Body of Method addCardInfoByUser: ${body}" />
-        <to uri="activemq-demo:queue:anhnh.spring.addcardbyuser.response" />
-    </route>
-
     <!-- Store procedure -->
     <route id="SpringJpaAddCardInfoByUserWithSP">
         <from uri="activemq-demo:queue:anhnh.spring.sp.addcarduser.request?asyncConsumer=true" />
+        <transacted/>
         <log message="Request Body of RouteId SpringJpaAddCardInfoByUserWithSP: ${body}" />
         <bean ref="cardInfoService" method="addCardInfoAndUserWithSP"/>
         <log message="Request Body of Method addCardInfoAndUserWithSP: ${body}" />
+        <process ref="handleProcess"/>
         <to uri="activemq-demo:queue:anhnh.spring.sp.addcarduser.response" />
     </route>
 

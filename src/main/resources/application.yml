@@ -14,6 +14,7 @@ spring:
     password: cm9vdA==
     driver-class-name: com.mysql.cj.jdbc.Driver
     hbm2ddl-auto:
+    hbm2ddl-auto-db2:
 
   jpa:
     generate-ddl: true
