@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class HandleProcess implements Processor {
+public class SimulateErrorProcess implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {
-        log.info("HandleProcess: {}", exchange.getIn().getBody(String.class));
+        var testError = 1/0;
     }
 }

@@ -20,13 +20,6 @@ begin
 select * from User;
 end;
 
-DROP TABLE IF EXISTS employee;
-
-CREATE TABLE employee (
-                          empId VARCHAR(10) NOT NULL,
-                          empName VARCHAR(100) NOT NULL
-);
-
 UPDATE CARD_INFORMATION SET MODIFIED_DATE='2023-01-30T02:56:01.048694' WHERE ID = 1;
 
 create procedure SP_INSERT_NEW_CARD_INFO(

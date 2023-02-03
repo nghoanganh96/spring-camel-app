@@ -42,9 +42,10 @@ public class ActiveMQConfig {
         return connectionFactory;
     }
 
-    public ConnectionFactory connectionFactory() {
+    @Bean(name = "cacheActiveMQConnectionFactory")
+    public ConnectionFactory connectionFactory(@Qualifier("activemq-db2") ActiveMQConnectionFactory activeMQConnectionFactory) {
         CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory();
-        cachingConnectionFactory.setTargetConnectionFactory(this.activeMQConnectionFactory());
+        cachingConnectionFactory.setTargetConnectionFactory(activeMQConnectionFactory);
         cachingConnectionFactory.setSessionCacheSize(sessionCacheSize);
         cachingConnectionFactory.setReconnectOnException(true);
 
@@ -52,16 +53,18 @@ public class ActiveMQConfig {
     }
 
     @Bean(name = "activemqComponent")
-    public Component activeMQComponent(@Qualifier("jmsTransactionManagerMsg") PlatformTransactionManager transactionManager) {
-        var jmsComponent = JmsComponent.jmsComponentAutoAcknowledge(this.connectionFactory());
+    public Component activeMQComponent(@Qualifier("jmsTransactionManagerMsg") PlatformTransactionManager transactionManager
+            , @Qualifier("cacheActiveMQConnectionFactory") ConnectionFactory connectionFactory) {
+
+        var jmsComponent = JmsComponent.jmsComponentAutoAcknowledge(connectionFactory);
         jmsComponent.setTransacted(true);
         jmsComponent.setTransactionManager(transactionManager);
         return jmsComponent;
     }
 
     @Bean
-    public JmsTemplate jmsTemplate() {
-        JmsTemplate jmsTemplate = new JmsTemplate(this.connectionFactory());
+    public JmsTemplate jmsTemplate(@Qualifier("cacheActiveMQConnectionFactory") ConnectionFactory connectionFactory) {
+        JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
         jmsTemplate.setDeliveryPersistent(false);
         return jmsTemplate;
     }
@@ -83,8 +86,16 @@ public class ActiveMQConfig {
     }
 
     // Specify Spring Transaction Management Policy
-    @Bean(name = "txRequired")
+    @Bean(name = "txJmsRequired")
     public SpringTransactionPolicy propagationRequired(@Qualifier("jmsTransactionManagerMsg") PlatformTransactionManager transactionManager) {
+        SpringTransactionPolicy propagationRequired = new SpringTransactionPolicy();
+        propagationRequired.setTransactionManager(transactionManager);
+        propagationRequired.setPropagationBehaviorName("PROPAGATION_REQUIRED");
+        return propagationRequired;
+    }
+
+    @Bean(name = "txCardRequired")
+    public SpringTransactionPolicy propagationRequiredCard(@Qualifier("cardTransactionManager") PlatformTransactionManager transactionManager) {
         SpringTransactionPolicy propagationRequired = new SpringTransactionPolicy();
         propagationRequired.setTransactionManager(transactionManager);
         propagationRequired.setPropagationBehaviorName("PROPAGATION_REQUIRED");

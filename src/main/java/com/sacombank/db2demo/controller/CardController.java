@@ -33,7 +33,8 @@ public class CardController {
 
     @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody CardInfoRequest request) {
-        return ResponseEntity.ok(cardInfoService.save(request));
+        var response = producerTemplate.requestBody("direct:tx-save-card-info", request);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -46,7 +47,13 @@ public class CardController {
     */
     @PostMapping("/message/save")
     public ResponseEntity<?> springJpaSave(@RequestBody CardInfoRequest request) {
-        messageService.sendMessageToQueue("anhnh.spring.save.request", request);
+        messageService.sendMessageToQueue("anhnh.spring.tx.savecard.request", request);
+
+        return ResponseEntity.ok(true);
+    }
+    @PostMapping("/message/save/error")
+    public ResponseEntity<?> springJpaSaveError(@RequestBody CardInfoRequest request) {
+        messageService.sendMessageToQueue("anhnh.spring.tx.error.savecard.request", request);
 
         return ResponseEntity.ok(true);
     }
