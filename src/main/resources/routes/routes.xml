@@ -21,10 +21,21 @@
     <!-- Store procedure -->
     <route id="SpringJpaAddCardInfoByUserWithSP">
         <from uri="activemq-demo:queue:anhnh.spring.sp.addcarduser.request?asyncConsumer=true" />
+        <transacted ref="jtaTransactionRequired"/>
         <log message="Request Body of RouteId SpringJpaAddCardInfoByUserWithSP: ${body}" />
         <bean ref="cardInfoService" method="addCardInfoAndUserWithSP"/>
         <log message="Request Body of Method addCardInfoAndUserWithSP: ${body}" />
         <to uri="activemq-demo:queue:anhnh.spring.sp.addcarduser.response" />
+    </route>
+
+    <route id="SpringJpaAddCardInfoByUserWithSP-Error">
+        <from uri="activemq-demo:queue:anhnh.spring.sp.error.addcarduser.request?asyncConsumer=true" />
+        <transacted ref="jtaTransactionRequired"/>
+        <log message="Request Body of RouteId SpringJpaAddCardInfoByUserWithSP: ${body}" />
+        <bean ref="cardInfoService" method="addCardInfoAndUserWithSP"/>
+        <log message="Request Body of Method addCardInfoAndUserWithSP: ${body}" />
+        <to uri="activemq-demo:queue:anhnh.spring.sp.addcarduser.response" />
+        <process ref="simulateErrorProcess"/>
     </route>
 
     <route id="SpringJpaGetCardInfoByIdWithSP">

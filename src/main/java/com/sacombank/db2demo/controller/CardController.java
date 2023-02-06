@@ -76,6 +76,14 @@ public class CardController {
         return ResponseEntity.ok(true);
     }
 
+    @PostMapping("message/addcarduser/sp/error")
+    public ResponseEntity<?> springJpaAddCardByUserWithSPError(@RequestBody UserCardInfoRequest request) {
+
+        messageService.sendMessageToQueue("anhnh.spring.sp.error.addcarduser.request", request);
+
+        return ResponseEntity.ok(true);
+    }
+
     @GetMapping("message/sp/{id}")
     public ResponseEntity<?> springJpaGetOneCardWithSP(@PathVariable Long id) {
         var response = producerTemplate.requestBody("direct:getcardbyidwithsp", id);

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.transaction.ChainedTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
@@ -101,6 +102,23 @@ public class ActiveMQConfig {
         propagationRequired.setPropagationBehaviorName("PROPAGATION_REQUIRED");
         return propagationRequired;
     }
+
+
+    // chain transaction manager
+    @Bean(name = "jtaTransactionRequired")
+    public SpringTransactionPolicy jtaTransactionPolicy(final @Qualifier("chainedTransactionManager") PlatformTransactionManager chainedTransactionManager) {
+        SpringTransactionPolicy springTransactionPolicy = new SpringTransactionPolicy();
+        springTransactionPolicy.setTransactionManager(chainedTransactionManager);
+        springTransactionPolicy.setPropagationBehaviorName("PROPAGATION_REQUIRED");
+        return springTransactionPolicy;
+    }
+
+    @Bean(name = "chainedTransactionManager")
+    public ChainedTransactionManager chainedTransactionManager(@Qualifier("userTransactionManager") PlatformTransactionManager userTransactionManager,
+                                                               @Qualifier("cardTransactionManager") PlatformTransactionManager cardTransactionManager) {
+        return new ChainedTransactionManager(userTransactionManager, cardTransactionManager);
+    }
+
 //
 //    @Bean(name = "TX_REQUIRES_NEW")
 //    public SpringTransactionPolicy propagationRequiresNew(PlatformTransactionManager transactionManager) {
