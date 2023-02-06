@@ -119,8 +119,10 @@ public class CardInfoService {
                     , LocalDateTime.now()
                     , LocalDateTime.now());
 
+            // just want to add more inserted information of User and Card for tracking the result easily
             CardUserResponse cardUserResponse = CardUserResponse.builder()
                     .user(user).cardInformation((CardInformation) getOneCardInfoWithSP(newId).getData()).build();
+
             return gson.toJson(ObjectResponse.buildSuccess(cardUserResponse));
         } catch (Exception ex) {
             log.error("Error in addCardInfoAndUserWithSP: ", ex);

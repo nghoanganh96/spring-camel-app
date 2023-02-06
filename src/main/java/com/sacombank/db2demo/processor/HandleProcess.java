@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class HandleProcess implements Processor {
     @Override
-    public void process(Exchange exchange) throws Exception {
+    public void process(Exchange exchange) {
         log.info("HandleProcess: {}", exchange.getIn().getBody(String.class));
     }
 }

@@ -29,6 +29,42 @@ spring:
     exclude:
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
+  jta:
+    atomikos:
+      datasource:
+        db2-card:
+          unique-resource-name: db2card
+          xa-data-source-class-name: com.ibm.db2.jcc.DB2XADataSource
+          xa-properties:
+            serverName: localhost
+            portNumber: 50000
+            databaseName: testdb
+            user: db2inst1
+            password: password
+            driverType: 4
+#          initQuery: set current sqlid = 'LVM'
+#          testOnBorrow: true
+#          validationQuery: select 1 from sysibm.sysdummy1
+#          defaultAutoCommit: false
+#          max-pool-size: 1
+#          min-pool-size: 1
+#          reap-timeout: 10
+        mysql-user:
+          unique-resource-name: mysqluser
+          xa-data-source-class-name: com.mysql.cj.jdbc.MysqlXADataSource
+          xa-properties:
+            serverName: localhost
+            portNumber: 3306
+            databaseName: user
+            user: root
+            password: root
+#          initQuery: set current sqlid = 'XXX'
+#          testOnBorrow: true
+#          validationQuery: select 1 from sysibm.sysdummy1
+#          defaultAutoCommit: false
+#          max-pool-size: 1
+#          min-pool-size: 1
+#          reap-timeout: 10
 # to keep the JVM running
 camel:
   springboot:
