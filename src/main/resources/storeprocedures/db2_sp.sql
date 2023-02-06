@@ -1,3 +1,4 @@
+/*  MYSQL */
 create procedure SP_ADD_NEW_USER(
     IN cif_id varchar(255),
     IN more_info varchar(255),
@@ -20,8 +21,7 @@ begin
 select * from User;
 end;
 
-UPDATE CARD_INFORMATION SET MODIFIED_DATE='2023-01-30T02:56:01.048694' WHERE ID = 1;
-
+/*  DB2 */
 create procedure SP_INSERT_NEW_CARD_INFO(
     IN cif_id varchar(255),
     IN cust_name varchar(255),

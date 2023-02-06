@@ -55,12 +55,8 @@ public class ActiveMQConfig {
     }
 
     @Bean(name = "activemqComponent")
-    public Component activeMQComponent(/*@Qualifier("jmsTransactionManagerMsg") PlatformTransactionManager transactionManager
-            , */@Qualifier("cacheActiveMQConnectionFactory") ConnectionFactory connectionFactory) {
-
+    public Component activeMQComponent(@Qualifier("cacheActiveMQConnectionFactory") ConnectionFactory connectionFactory) {
         var jmsComponent = JmsComponent.jmsComponentAutoAcknowledge(connectionFactory);
-//        jmsComponent.setTransacted(true);
-//        jmsComponent.setTransactionManager(transactionManager);
         return jmsComponent;
     }
 

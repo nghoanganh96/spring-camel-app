@@ -15,8 +15,6 @@ import javax.persistence.*;
 @Builder
 @Table(name = "card_information")
 public class CardInformation extends AuditingEntity {
-//    @Serial
-//    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

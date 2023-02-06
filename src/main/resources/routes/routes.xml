@@ -2,22 +2,6 @@
         xmlns="http://camel.apache.org/schema/spring"
         xsi:schemaLocation="http://camel.apache.org/schema/spring https://camel.apache.org/schema/spring/camel-spring.xsd">
 
-    <route id="SpringJpaSaveCardInfo">
-        <from uri="activemq-demo:queue:anhnh.spring.save.request?asyncConsumer=true" />
-        <log message="Request Body of SpringJpaSaveCardInfo: ${body}" />
-        <bean ref="cardInfoService" method="saveCardInfo"/>
-        <log message="Request Body of saveCardInfo: ${body}" />
-        <to uri="activemq-demo:queue:anhnh.spring.save.response" />
-    </route>
-
-    <route id="SpringJpaGetOneCardInfo">
-        <from uri="activemq-demo:queue:anhnh.spring.getone.request?asyncConsumer=true" />
-        <log message="Request Body of SpringJpaGetOneCardInfo: ${body}" />
-        <bean ref="cardInfoService" method="getOneCardInfo"/>
-        <log message="Request Body of getOneCardInfo: ${body}" />
-        <to uri="activemq-demo:queue:anhnh.spring.getone.response" />
-    </route>
-
     <!-- Store procedure -->
     <route id="SpringJpaAddCardInfoByUserWithSP">
         <from uri="activemq-demo:queue:anhnh.spring.sp.addcarduser.request?asyncConsumer=true" />
@@ -44,26 +28,5 @@
         <bean ref="cardInfoService" method="getOneCardInfoWithSP"/>
         <log message="Request Body of Method getOneCardInfoWithSP: ${body}" />
     </route>
-
-    <!-- Transaction -->
-<!--    <route id="TXSaveCardInfo">-->
-<!--        <from uri="direct:tx-save-card-info"/>-->
-<!--        <transacted ref="txCardRequired"/>-->
-<!--        <bean ref="cardInfoService" method="save"/>-->
-<!--    </route>-->
-
-<!--    <route id="TXSaveCardInfoMsg">-->
-<!--        <from uri="activemq-demo:queue:anhnh.spring.tx.savecard.request?asyncConsumer=true"/>-->
-<!--        <transacted ref="txCardRequired"/>-->
-<!--        <bean ref="cardInfoService" method="saveCardInfo"/>-->
-<!--        <to uri="activemq-demo:queue:anhnh.spring.tx.savecard.response" />-->
-<!--    </route>-->
-<!--    <route id="TXSaveCardInfoMsg-Error">-->
-<!--        <from uri="activemq-demo:queue:anhnh.spring.tx.error.savecard.request?asyncConsumer=true"/>-->
-<!--        <transacted ref="txCardRequired"/>-->
-<!--        <bean ref="cardInfoService" method="saveCardInfo"/>-->
-<!--        <to uri="activemq-demo:queue:anhnh.spring.tx.error.savecard.response" />-->
-<!--        <process ref="simulateErrorProcess"/>-->
-<!--    </route>-->
 
 </routes>

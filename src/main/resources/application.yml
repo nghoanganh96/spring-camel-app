@@ -65,6 +65,7 @@ spring:
 #          max-pool-size: 1
 #          min-pool-size: 1
 #          reap-timeout: 10
+
 # to keep the JVM running
 camel:
   springboot:
