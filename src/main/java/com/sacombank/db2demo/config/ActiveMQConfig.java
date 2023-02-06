@@ -1,6 +1,7 @@
 package com.sacombank.db2demo.config;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.RedeliveryPolicy;
 import org.apache.camel.Component;
 import org.apache.camel.component.jms.JmsComponent;
 import org.apache.camel.spring.spi.SpringTransactionPolicy;
@@ -39,6 +40,12 @@ public class ActiveMQConfig {
         connectionFactory.setDispatchAsync(false);
         connectionFactory.setOptimizeAcknowledge(true);
         connectionFactory.setAlwaysSessionAsync(true);
+
+        RedeliveryPolicy redeliveryPolicy = new RedeliveryPolicy();
+        redeliveryPolicy.setMaximumRedeliveries(1);
+        redeliveryPolicy.setRedeliveryDelay(3000);
+
+        connectionFactory.setRedeliveryPolicy(redeliveryPolicy);
 
         return connectionFactory;
     }
