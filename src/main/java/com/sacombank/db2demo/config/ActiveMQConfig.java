@@ -1,24 +1,19 @@
 package com.sacombank.db2demo.config;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.RedeliveryPolicy;
 import org.apache.camel.Component;
 import org.apache.camel.component.jms.JmsComponent;
-import org.apache.camel.spring.spi.SpringTransactionPolicy;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.transaction.ChainedTransactionManager;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.connection.CachingConnectionFactory;
-import org.springframework.jms.connection.JmsTransactionManager;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.jms.ConnectionFactory;
-import javax.sql.DataSource;
 
 @Configuration
 @EnableJms
@@ -39,6 +34,12 @@ public class ActiveMQConfig {
         connectionFactory.setDispatchAsync(false);
         connectionFactory.setOptimizeAcknowledge(true);
         connectionFactory.setAlwaysSessionAsync(true);
+
+        RedeliveryPolicy redeliveryPolicy = new RedeliveryPolicy();
+        redeliveryPolicy.setMaximumRedeliveries(1);
+        redeliveryPolicy.setRedeliveryDelay(3000);
+
+        connectionFactory.setRedeliveryPolicy(redeliveryPolicy);
 
         return connectionFactory;
     }

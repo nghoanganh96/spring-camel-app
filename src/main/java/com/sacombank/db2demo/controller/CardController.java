@@ -1,7 +1,6 @@
 package com.sacombank.db2demo.controller;
 
 import com.google.gson.Gson;
-import com.sacombank.db2demo.constant.Constant;
 import com.sacombank.db2demo.model.request.CardInfoRequest;
 import com.sacombank.db2demo.model.request.UserCardInfoRequest;
 import com.sacombank.db2demo.service.CardInfoService;
@@ -10,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/app/v1/card-info/")

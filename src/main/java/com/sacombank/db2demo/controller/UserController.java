@@ -1,9 +1,7 @@
 package com.sacombank.db2demo.controller;
 
 import com.google.gson.Gson;
-import com.sacombank.db2demo.model.request.CardInfoRequest;
 import com.sacombank.db2demo.model.request.UserRequest;
-import com.sacombank.db2demo.service.CardInfoService;
 import com.sacombank.db2demo.service.MessageService;
 import com.sacombank.db2demo.service.UserService;
 import lombok.RequiredArgsConstructor;
