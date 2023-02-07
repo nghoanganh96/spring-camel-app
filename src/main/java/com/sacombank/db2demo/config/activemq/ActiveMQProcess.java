@@ -14,7 +14,7 @@ public class ActiveMQProcess {
 
     public void executeMessage(ActiveMQTextMessage message) {
         try {
-            log.info("Receiving a message: {}", message.getText());
+            log.info("Receiving a message from {}: {}", message.getDestination(), message.getText());
 
             // TODO handle this message later...
 

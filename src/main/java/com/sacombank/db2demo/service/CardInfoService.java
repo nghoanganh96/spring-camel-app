@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -79,11 +80,21 @@ public class CardInfoService {
         return gson.toJson(response);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ObjectResponse getOneCardInfoWithSP(Long idRequest) {
         var response = cardInfoRepository.spGetCardInfoById(idRequest);
 
         return response.map(ObjectResponse::buildSuccess).orElseGet(() -> ObjectResponse.buildFailed("Cannot found CardInfo with id = " + idRequest));
+    }
+
+    @Transactional(readOnly = true)
+    public ObjectResponse getAllCardInfoWithSP() {
+        var listCard = cardInfoRepository.spGetAllCardInfo();
+
+        return CollectionUtils.isEmpty(listCard) ?
+                ObjectResponse.buildFailed("List of Card Information is empty.")
+                :
+                ObjectResponse.buildSuccess(listCard);
     }
 
     @Transactional(rollbackFor = Exception.class)

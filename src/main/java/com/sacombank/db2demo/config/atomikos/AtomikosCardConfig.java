@@ -30,14 +30,23 @@ public class AtomikosCardConfig {
 
     private final EncryptService encryptService;
 
-    @Value("${spring.user-datasource.hbm2ddl-auto-db2: }")
+    @Value("${spring.jta.atomikos.datasource.db2-card.hbm2ddl-auto: }")
     String hbm2ddlAuto;
 
-    @Bean(name = "atomikosDb2Card")
     @Primary
+    @Bean(name = "atomikosDb2CardTemp")
     @ConfigurationProperties(prefix = "spring.jta.atomikos.datasource.db2-card")
-    public DataSource atomikosDb2Card() {
+    public AtomikosDataSourceBean atomikosDb2CardTemp() {
         return new AtomikosDataSourceBean();
+    }
+
+    @Primary
+    @Bean(name = "atomikosDb2Card")
+    public DataSource atomikosDb2Card() {
+        var dataSourceBean = atomikosDb2CardTemp();
+        Properties properties = dataSourceBean.getXaProperties();
+        properties.setProperty("password", encryptService.decode(properties.getProperty("password")));
+        return dataSourceBean;
     }
 
     @Primary

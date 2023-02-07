@@ -1,5 +1,6 @@
 package com.sacombank.db2demo.config;
 
+import com.sacombank.db2demo.config.activemq.ActiveMQProcess;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.RedeliveryPolicy;
 import org.apache.camel.Component;
@@ -73,8 +74,7 @@ public class ActiveMQConfig {
         factory.setConnectionFactory(this.activeMQConnectionFactory());
 
         // true: using jms topic, false: using jms queue
-        // factory.setPubSubDomain(false);
+        // factory.setPubSubDomain(true);
         return factory;
     }
-
 }

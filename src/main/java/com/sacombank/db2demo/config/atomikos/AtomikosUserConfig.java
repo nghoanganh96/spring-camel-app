@@ -1,12 +1,15 @@
 package com.sacombank.db2demo.config.atomikos;
 
 import com.atomikos.jdbc.AtomikosDataSourceBean;
+import com.ibm.db2.jcc.DB2XADataSource;
+import com.mysql.cj.jdbc.MysqlXADataSource;
 import com.sacombank.db2demo.service.EncryptService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,13 +32,21 @@ public class AtomikosUserConfig {
 
     private final EncryptService encryptService;
 
-    @Value("${spring.user-datasource.hbm2ddl-auto: }")
+    @Value("${spring.jta.atomikos.datasource.mysql-user.hbm2ddl-auto: }")
     String hbm2ddlAuto;
 
-    @Bean(name = "atomikosMysqlUser")
+    @Bean(name = "atomikosMysqlUserTemp")
     @ConfigurationProperties(prefix = "spring.jta.atomikos.datasource.mysql-user")
-    public DataSource atomikosMysqlUser() {
+    public AtomikosDataSourceBean atomikosMysqlUserTemp() {
         return new AtomikosDataSourceBean();
+    }
+
+    @Bean(name = "atomikosMysqlUser")
+    public DataSource atomikosMysqlUser() {
+        var dataSourceBean = atomikosMysqlUserTemp();
+        Properties properties = dataSourceBean.getXaProperties();
+        properties.setProperty("password", encryptService.decode(properties.getProperty("password")));
+        return dataSourceBean;
     }
 
 

@@ -3,29 +3,40 @@
         xsi:schemaLocation="http://camel.apache.org/schema/spring https://camel.apache.org/schema/spring/camel-spring.xsd">
 
     <!-- Store procedure -->
+    <!-- Add user and card info successfully -->
     <route id="SpringJpaAddCardInfoByUserWithSP">
         <from uri="activemq-demo:queue:anhnh.spring.sp.addcarduser.request?asyncConsumer=true" />
         <transacted ref="txAtomikosJtaRequired"/>
         <log message="Request Body of RouteId SpringJpaAddCardInfoByUserWithSP: ${body}" />
-        <bean ref="cardInfoService" method="addCardInfoAndUserWithSP"/>
+        <bean ref="cardInfoService" method="addCardInfoAndUserWithSP" />
         <log message="Request Body of Method addCardInfoAndUserWithSP: ${body}" />
         <to uri="activemq-demo:queue:anhnh.spring.sp.addcarduser.response" />
     </route>
 
+    <!-- Add user and card info failed then rollback the DB -->
     <route id="SpringJpaAddCardInfoByUserWithSP-Error">
         <from uri="activemq-demo:queue:anhnh.spring.sp.error.addcarduser.request?asyncConsumer=true" />
         <transacted ref="txAtomikosJtaRequired"/>
         <log message="Request Body of RouteId SpringJpaAddCardInfoByUserWithSP: ${body}" />
-        <bean ref="cardInfoService" method="addCardInfoAndUserWithSP"/>
+        <bean ref="cardInfoService" method="addCardInfoAndUserWithSP" />
         <log message="Request Body of Method addCardInfoAndUserWithSP: ${body}" />
         <to uri="activemq-demo:queue:anhnh.spring.sp.addcarduser.response" />
         <process ref="simulateErrorProcess"/>
     </route>
 
+    <!--    Get a Card info by Id -->
     <route id="SpringJpaGetCardInfoByIdWithSP">
         <from uri="direct:getcardbyidwithsp" />
         <log message="Request Body of RouteId SpringJpaGetCardInfoByIdWithSP: ${body}" />
         <bean ref="cardInfoService" method="getOneCardInfoWithSP"/>
+        <log message="Request Body of Method getOneCardInfoWithSP: ${body}" />
+    </route>
+
+    <!--    Get all Card info -->
+    <route id="SpringJpaGetAllCardInfoWithSP">
+        <from uri="direct:getallcardwithsp" />
+        <log message="Request Body of RouteId SpringJpaGetAllCardInfoWithSP: ${body}" />
+        <bean ref="cardInfoService" method="getAllCardInfoWithSP" />
         <log message="Request Body of Method getOneCardInfoWithSP: ${body}" />
     </route>
 

@@ -2,20 +2,6 @@ server:
   port: 8081
 
 spring:
-  datasource:
-    url: jdbc:db2://localhost:50000/testdb
-    username: db2inst1
-    password: cGFzc3dvcmQ=
-    driver-class-name: com.ibm.db2.jcc.DB2Driver
-
-  user-datasource:
-    url: jdbc:mysql://localhost:3306/user
-    username: root
-    password: cm9vdA==
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    hbm2ddl-auto:
-    hbm2ddl-auto-db2:
-
   jpa:
     generate-ddl: true
     hibernate:
@@ -35,36 +21,38 @@ spring:
         db2-card:
           unique-resource-name: db2card
           xa-data-source-class-name: com.ibm.db2.jcc.DB2XADataSource
+          hbm2ddl-auto:
           xa-properties:
             serverName: localhost
             portNumber: 50000
             databaseName: testdb
             user: db2inst1
-            password: password
+            password: cGFzc3dvcmQ=
             driverType: 4
 #          initQuery: set current sqlid = 'LVM'
 #          testOnBorrow: true
 #          validationQuery: select 1 from sysibm.sysdummy1
 #          defaultAutoCommit: false
-#          max-pool-size: 1
-#          min-pool-size: 1
-#          reap-timeout: 10
+          max-pool-size: 1
+          min-pool-size: 1
+          reap-timeout: 10
         mysql-user:
           unique-resource-name: mysqluser
           xa-data-source-class-name: com.mysql.cj.jdbc.MysqlXADataSource
+          hbm2ddl-auto:
           xa-properties:
             serverName: localhost
             portNumber: 3306
             databaseName: user
             user: root
-            password: root
+            password: cm9vdA==
 #          initQuery: set current sqlid = 'XXX'
 #          testOnBorrow: true
 #          validationQuery: select 1 from sysibm.sysdummy1
 #          defaultAutoCommit: false
-#          max-pool-size: 1
-#          min-pool-size: 1
-#          reap-timeout: 10
+          max-pool-size: 1
+          min-pool-size: 1
+          reap-timeout: 10
 
 # to keep the JVM running
 camel:
@@ -83,4 +71,5 @@ activemq-jds:
   name: activemq-demo
   host: tcp://localhost:61616
   session-cache-size: 500
+
 

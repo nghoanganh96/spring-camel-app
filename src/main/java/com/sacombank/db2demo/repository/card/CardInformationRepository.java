@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -24,4 +25,6 @@ public interface CardInformationRepository extends JpaRepository<CardInformation
     @Procedure(procedureName = "SP_GET_CARD_INFO_BY_ID")
     Optional<CardInformation> spGetCardInfoById(@Param("card_id") long id);
 
+    @Procedure(procedureName = "SP_GET_ALL_CARD_INFO")
+    List<CardInformation> spGetAllCardInfo();
 }
