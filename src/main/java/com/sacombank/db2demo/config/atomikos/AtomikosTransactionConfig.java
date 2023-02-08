@@ -18,6 +18,7 @@ import javax.transaction.UserTransaction;
 @EnableTransactionManagement
 public class AtomikosTransactionConfig {
 
+
     @Bean(name = "atomikosTransactionManager", initMethod = "init", destroyMethod = "close")
     public UserTransactionManager atomikosTransactionManager() throws SystemException {
         UserTransactionManager userTransactionManager = new UserTransactionManager();
