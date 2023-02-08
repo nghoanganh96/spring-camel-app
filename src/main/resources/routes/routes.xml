@@ -34,7 +34,7 @@
         <log message="Request Body of RouteId SpringJpaAddCardInfoByUserWithSP: ${body}" />
         <bean ref="cardInfoService" method="addCardInfoAndUserWithSP"/>
         <log message="Request Body of Method addCardInfoAndUserWithSP: ${body}" />
-        <to uri="activemq-demo:queue:anhnh.spring.sp.addcarduser.response" />
+        <to uri="activemq-demo:queue:anhnh.spring.sp.error.addcarduser.response" />
         <process ref="simulateErrorProcess"/>
     </route>
 
