@@ -9,9 +9,6 @@ import java.util.Base64;
 @Slf4j
 public class EncryptService {
     public String decode(String encodeString) {
-        log.info("Encode String: {}", encodeString);
-        var decodeString  = new String(Base64.getDecoder().decode(encodeString));
-        log.info("Decode String: {}", decodeString);
-        return decodeString;
+        return new String(Base64.getDecoder().decode(encodeString));
     }
 }
