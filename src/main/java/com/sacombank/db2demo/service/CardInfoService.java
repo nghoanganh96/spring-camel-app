@@ -141,4 +141,27 @@ public class CardInfoService {
             throw ex;
         }
     }
+
+    public String deleteCardInfoByCifIdWithSP(String bodyExchange) {
+        if (Strings.isBlank(bodyExchange)) {
+            return gson.toJson(ObjectResponse.buildFailed("Message Request is null or blank"));
+        }
+
+        try {
+            User userDeleted = gson.fromJson(bodyExchange, User.class);
+            String cifId = userDeleted.getCifId();
+
+            // delete card information
+            int affectedRow = cardInfoRepository.spDeleteCardInfoByCifId(cifId);
+            if (affectedRow <= 0){
+                throw new RuntimeException("Cannot delete CardInfo, due to affectedRow <= 0");
+            }
+
+            return gson.toJson(ObjectResponse.buildSuccess(userDeleted));
+
+        } catch (Exception ex) {
+            log.error("Error in deleteCardInfoByCifIdWithSP: ", ex);
+            throw ex;
+        }
+    }
 }

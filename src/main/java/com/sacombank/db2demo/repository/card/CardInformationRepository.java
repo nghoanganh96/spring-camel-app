@@ -27,4 +27,13 @@ public interface CardInformationRepository extends JpaRepository<CardInformation
 
     @Procedure(procedureName = "SP_GET_ALL_CARD_INFO")
     List<CardInformation> spGetAllCardInfo();
+
+    @Procedure(procedureName = "DELETE_CARD_BY_CIFID", outputParameterName = "count_affected_row")
+    int spDeleteCardInfoByCifId(@Param("in_cif_id") String cifId);
+
+    @Procedure(procedureName = "UPDATE_CARD", outputParameterName = "count_affected_row")
+    int spUpdateCardInfo(@Param("in_id") Long id
+            , @Param("in_cust_name") String custName
+            , @Param("in_card_number") String cardNumber
+            , @Param("in_card_type") String cardType);
 }

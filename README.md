@@ -60,7 +60,7 @@
 1. Insert 1 record cho User (Mysql) và 1 record cho CardInfomation (Db2)
    - Controller rest api -> send Request message to ActiveMQ -> Camel processing to save data.... -> send Response to another queue on ActiveMQ
    - Check kết quả ở activemq (queue:anhnh.spring.sp.addcarduser.response) và database
-   - Trigger controller:
+   - Example start controller:
 
     ```url
     curl --location --request POST 'localhost:8081/app/v1/card-info/addcarduser' \
@@ -76,7 +76,8 @@
 
 2. Như route 1, nhưng sẽ throw exception để rollback ở database và không lưu response ở queue
    - Để kiểm tra global transaction hoạt động trên nhiều resource (2 databases và 1 activeMQ).
-   - Controller rest api -> send Request message to ActiveMQ -> Camel processing to save data .... -> send Response to another queue on ActiveMQ -> throw exception -> rollback
+   - Controller rest api -> send Request message to ActiveMQ -> Camel processing to save data .... -> send Response to another queue on ActiveMQ -> throw exception -> rollback DB and queue
+   - Example start controller:
 
     ```url
     curl --location --request POST 'localhost:8081/app/v1/card-info/addcarduser/error' \
@@ -90,13 +91,35 @@
        }'
     ```
 
-3. Get one card information by id
+3. Delete record ở User (Mysql) dựa vào userId và CardInfomation (Db2) (linked bằng cifId)
+    - Controller rest api -> send Request message to ActiveMQ -> Camel processing to delete User -> Camel processing to delete CardInfo -> send Response to another queue on ActiveMQ
+    - Check kết quả ở activemq (queue:anhnh.spring.sp.deletecarduser.response) và database
+    - Example start controller:
+
+    ```url
+    curl --location --request DELETE 'localhost:8081/app/v1/card-info/deletecarduser/1'
+    ```
+
+4. Như route 3, nhưng sẽ throw exception để rollback ở database và không lưu response ở queue
+    - Để kiểm tra global transaction hoạt động trên nhiều resource (2 databases và 1 activeMQ).
+    - Controller rest api -> send Request message to ActiveMQ -> Camel processing to delete User -> Camel processing to delete CardInfo -> send Response to another queue on ActiveMQ -> throw exception -> rollback DB and queue
+    - Example start controller:
+
+    ```url
+    curl --location --request DELETE 'localhost:8081/app/v1/card-info/deletecarduser/error/2'
+    ```
+   
+5. Get one card information by id
    - Controller rest api -> Camel processing to get data .... -> return the response in rest api
+   - Example start controller:
+
     ```url
     curl --location --request GET 'localhost:8081/app/v1/card-info/1'
     ```
-4. Get all card information
-    - Controller rest api  -> Camel processing to get data .... -> return the response in rest api
-    ```url
-    curl --location --request GET 'localhost:8081/app/v1/card-info/all'
-    ```
+6. Get all card information
+   - Controller rest api  -> Camel processing to get data .... -> return the response in rest api
+   - Example start controller:
+
+   ```url
+     curl --location --request GET 'localhost:8081/app/v1/card-info/all'
+   ```

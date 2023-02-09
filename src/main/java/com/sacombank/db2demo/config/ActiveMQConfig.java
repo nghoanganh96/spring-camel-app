@@ -41,7 +41,7 @@ public class ActiveMQConfig {
         connectionFactory.setAlwaysSessionAsync(true);
 
         RedeliveryPolicy redeliveryPolicy = new RedeliveryPolicy();
-        redeliveryPolicy.setMaximumRedeliveries(1);
+        redeliveryPolicy.setMaximumRedeliveries(0);
         redeliveryPolicy.setRedeliveryDelay(2000);
 
         connectionFactory.setRedeliveryPolicy(redeliveryPolicy);

@@ -1,24 +1,40 @@
-/*  MYSQL */
-create procedure SP_ADD_NEW_USER(
-    IN cif_id varchar(255),
-    IN more_info varchar(255),
-    OUT last_id bigint
+
+-- Store Procedure
+-- INSERT
+DROP PROCEDURE IF EXISTS SP_ADD_NEW_USER;
+CREATE PROCEDURE SP_ADD_NEW_USER(
+    IN cif_id VARCHAR(255),
+    IN more_info VARCHAR(255),
+    OUT last_user_id BIGINT
 )
-begin
-    insert into User (cif_id, more_info) values (cif_id, more_info);
-    set last_id = LAST_INSERT_ID();
+BEGIN
+        DECLARE count_users int default 0;
+        SET count_users = (select count(id) from user.User);
+INSERT INTO user.User(CIF_ID, MORE_INFO) VALUES (cif_id, more_info);
+SET last_user_id = LAST_INSERT_ID();
 end;
 
-
-create procedure SP_GET_USER_BY_ID(
-    IN user_id varchar(255)
-)
-begin
-    select * from User where id = user_id;
+-- SELECT BY ID
+DROP PROCEDURE IF EXISTS SP_GET_USER_BY_ID;
+CREATE PROCEDURE SP_GET_USER_BY_ID(IN user_id BIGINT)
+BEGIN
+SELECT * FROM user.User WHERE id = user_id;
 end;
 
-
-create procedure SP_GET_ALL_USERS()
-begin
-    select * from User;
+-- SELECT ALL
+DROP PROCEDURE IF EXISTS SP_GET_ALL_USERS;
+CREATE PROCEDURE SP_GET_ALL_USERS()
+BEGIN
+SELECT * FROM user.User;
 end;
+
+-- DELETE
+DROP PROCEDURE IF EXISTS DELETE_USER_BY_ID;
+CREATE PROCEDURE DELETE_USER_BY_ID(IN in_id BIGINT, OUT count_affected_row INT)
+    LANGUAGE SQL
+    MODIFIES SQL DATA
+P1: BEGIN
+DELETE FROM user.User WHERE id = in_id;
+SET count_affected_row =  ROW_COUNT();
+END P1;
+

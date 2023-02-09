@@ -33,17 +33,25 @@ public class CardController {
     */
     @PostMapping("/addcarduser")
     public ResponseEntity<?> springJpaAddCardByUserWithSP(@RequestBody UserCardInfoRequest request) {
-
         messageService.sendMessageToQueue("anhnh.spring.sp.addcarduser.request", request);
-
         return ResponseEntity.ok(true);
     }
 
     @PostMapping("/addcarduser/error")
     public ResponseEntity<?> springJpaAddCardByUserWithSPError(@RequestBody UserCardInfoRequest request) {
-
         messageService.sendMessageToQueue("anhnh.spring.sp.error.addcarduser.request", request);
+        return ResponseEntity.ok(true);
+    }
 
+    @DeleteMapping("/deletecarduser/{id}")
+    public ResponseEntity<?> springJpaDeleteCardUserWithSP(@PathVariable Long id) {
+        messageService.sendMessageToQueue("anhnh.spring.sp.deletecarduser.request", id);
+        return ResponseEntity.ok(true);
+    }
+
+    @DeleteMapping("/deletecarduser/error/{id}")
+    public ResponseEntity<?> springJpaDeleteCardUserWithSPError(@PathVariable Long id) {
+        messageService.sendMessageToQueue("anhnh.spring.sp.error.deletecarduser.request", id);
         return ResponseEntity.ok(true);
     }
 

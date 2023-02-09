@@ -24,6 +24,29 @@
         <process ref="simulateErrorProcess"/>
     </route>
 
+    <!-- DELETE user and card info -->
+    <route id="SpringJpaDeleteCardInfoUserWithSP">
+        <from uri="activemq-demo:queue:anhnh.spring.sp.deletecarduser.request?asyncConsumer=true" />
+        <transacted ref="txAtomikosJtaRequired"/>
+        <bean ref="userService" method="deleteWithSP" />
+        <log message="Request Body of Method deleteUserWithSP: ${body}" />
+        <bean ref="cardInfoService" method="deleteCardInfoByCifIdWithSP" />
+        <log message="Request Body of Method addCardInfoAndUserWithSP: ${body}" />
+        <to uri="activemq-demo:queue:anhnh.spring.sp.deletecarduser.response" />
+    </route>
+
+    <!-- DELETE user and card info Error -->
+    <route id="SpringJpaDeleteCardInfoUserWithSP-Error">
+        <from uri="activemq-demo:queue:anhnh.spring.sp.error.deletecarduser.request?asyncConsumer=true" />
+        <transacted ref="txAtomikosJtaRequired"/>
+        <bean ref="userService" method="deleteWithSP" />
+        <log message="Request Body of Method deleteUserWithSP: ${body}" />
+        <bean ref="cardInfoService" method="deleteCardInfoByCifIdWithSP" />
+        <log message="Request Body of Method addCardInfoAndUserWithSP: ${body}" />
+        <to uri="activemq-demo:queue:anhnh.spring.sp.error.deletecarduser.response" />
+        <process ref="simulateErrorProcess"/>
+    </route>
+
     <!--    Get a Card info by Id -->
     <route id="SpringJpaGetCardInfoByIdWithSP">
         <from uri="direct:getcardbyidwithsp" />

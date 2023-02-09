@@ -1,5 +1,6 @@
 package com.sacombank.db2demo.service;
 
+import com.google.gson.Gson;
 import com.sacombank.db2demo.entity.user.User;
 import com.sacombank.db2demo.model.ObjectResponse;
 import com.sacombank.db2demo.model.request.UserRequest;
@@ -15,6 +16,7 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final Gson gson;
 
     public ObjectResponse getOneUser(Long id) {
         var optionalUser = userRepository.findById(id);
@@ -57,5 +59,29 @@ public class UserService {
             return false;
         }
         return true;
+    }
+
+    public String deleteWithSP(String bodyExchange) {
+        try {
+            long deleteId = gson.fromJson(bodyExchange, Long.class);
+            // Get deleted User
+            var getUser = spGetOneUser(deleteId);
+            if (getUser.getCode() != 0) {
+                throw new RuntimeException(getUser.getMessage());
+            }
+
+            // processing deletion
+            int affectedRow = userRepository.spDeleteUserById(deleteId);
+            if (affectedRow <= 0){
+                throw new RuntimeException("Cannot delete User, due to affectedRow <= 0");
+            }
+
+            User userDeleted = (User)getUser.getData();
+            return gson.toJson(userDeleted);
+
+        } catch (Exception ex) {
+            log.error("Error when delete user at id {}", bodyExchange, ex);
+            throw ex;
+        }
     }
 }
