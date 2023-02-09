@@ -14,7 +14,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class TransactionConfig {
 
     @Bean(name = "txAtomikosJtaRequired")
-    public SpringTransactionPolicy propagationRequiredCard(@Qualifier("jtaAtomikosTransactionManager") PlatformTransactionManager jtaAtomikosTransactionManager) {
+    public SpringTransactionPolicy propagationRequiredCard(
+            @Qualifier("jtaAtomikosTransactionManager") PlatformTransactionManager jtaAtomikosTransactionManager
+    ) {
         SpringTransactionPolicy propagationRequired = new SpringTransactionPolicy();
         propagationRequired.setTransactionManager(jtaAtomikosTransactionManager);
         propagationRequired.setPropagationBehaviorName("PROPAGATION_REQUIRED");

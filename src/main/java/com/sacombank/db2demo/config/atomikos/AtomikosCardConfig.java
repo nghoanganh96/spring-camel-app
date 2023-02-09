@@ -22,7 +22,7 @@ import java.util.Properties;
 @EnableJpaRepositories(
         basePackages = {"com.sacombank.db2demo.repository.card"},
         entityManagerFactoryRef = "atomikosCardEntityManagerFactory",
-        transactionManagerRef = "jtaAtomikosTransactionManager"
+        transactionManagerRef = "jtaAtomikosTransactionManager" // point to bean at AtomikosTransactionConfig
 )
 @RequiredArgsConstructor
 @Slf4j
@@ -37,6 +37,7 @@ public class AtomikosCardConfig {
     @Bean(name = "atomikosDb2CardTemp")
     @ConfigurationProperties(prefix = "spring.jta.atomikos.datasource.db2-card")
     public AtomikosDataSourceBean atomikosDb2CardTemp() {
+        // automatically inject properties from application.yml
         return new AtomikosDataSourceBean();
     }
 
@@ -45,13 +46,15 @@ public class AtomikosCardConfig {
     public DataSource atomikosDb2Card() {
         var dataSourceBean = atomikosDb2CardTemp();
         Properties properties = dataSourceBean.getXaProperties();
+        // Decode password
         properties.setProperty("password", encryptService.decode(properties.getProperty("password")));
         return dataSourceBean;
     }
 
     @Primary
     @Bean(name = "atomikosCardEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean atomikosCardEntityManagerFactory(@Qualifier("atomikosDb2Card") DataSource atomikosDb2Card) {
+    public LocalContainerEntityManagerFactoryBean atomikosCardEntityManagerFactory(
+            @Qualifier("atomikosDb2Card") DataSource atomikosDb2Card) {
 
         LocalContainerEntityManagerFactoryBean entityManager = new LocalContainerEntityManagerFactoryBean();
 
@@ -63,7 +66,7 @@ public class AtomikosCardConfig {
 
         entityManager.setDataSource(atomikosDb2Card);
         entityManager.setJpaProperties(jpaProperties);
-        entityManager.setPackagesToScan("com.sacombank.db2demo.entity.card", "com.sacombank.db2demo.entity.base");
+        entityManager.setPackagesToScan("com.sacombank.db2demo.entity.card", "com.sacombank.db2demo.entity.base"); // point to DB2 Entities
         entityManager.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         return entityManager;
     }

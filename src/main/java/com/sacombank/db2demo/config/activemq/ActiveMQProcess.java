@@ -7,6 +7,9 @@ import org.apache.activemq.command.ActiveMQTextMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/***
+ * Listen and handle the message from ActiveMQ
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
